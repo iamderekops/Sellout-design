@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>导出 data.json 工具</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  body{font-family:-apple-system,"PingFang SC",sans-serif; background:#F5F5F7; color:#1D1D1F;
+    display:flex; align-items:center; justify-content:center; height:100vh; margin:0;}
+  .box{background:#fff; padding:40px; border-radius:20px; box-shadow:0 8px 30px rgba(0,0,0,0.08); text-align:center; max-width:440px;}
+  h2{margin-top:0;}
+  p{color:#6E6E73; font-size:14px; line-height:1.6;}
+  input{margin:20px 0;}
+  #status{font-size:13px; color:#0071E3; margin-top:16px; min-height:20px;}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>📤 导出为 data.json</h2>
+  <p>选择您更新后的 <b>Sellout Design.xlsx</b>，系统会自动生成 <b>data.json</b> 并下载到浏览器默认下载目录。<br>把这个文件拖到GitHub仓库里覆盖旧文件、提交，即可完成同步。</p>
+  <input type="file" id="fileInput" accept=".xlsx">
+  <div id="status"></div>
+</div>
+<script>
+document.getElementById('fileInput').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  document.getElementById('status').textContent = '正在处理...';
+  const buf = await file.arrayBuffer();
+  const wb = XLSX.read(buf, {type:'array'});
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  const json = XLSX.utils.sheet_to_json(ws, {defval:''});
+
+  const normalize = (r) => {
+    const keys = Object.keys(r);
+    const find = (frag) => { const k = keys.find(k => k.toLowerCase().includes(frag.toLowerCase())); return k ? r[k] : ''; };
+    return {
+      division_code: find('Division_Code'), division_name: find('Division_Name'),
+      channel_l0: find('Channel L0'), channel_l1: find('Channel L1'),
+      channel_l2: find('Channel L2'), channel_l3: find('Channel L3'),
+      source: find('onedata_partition_source'), remark: find('Remark'),
+      granularity: find('granularity'), frequency: find('frequency'),
+      sellout_time: find('sellout time'), nso_calc: find('NSO calculation'),
+      ingestion_logic: find('Ingestion Logic'), processing_logic: find('processing Logic')
+    };
+  };
+
+  const rows = json.map(normalize);
+  const payload = { generatedAt: new Date().toLocaleString('zh-CN'), rows };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'data.json'; a.click();
+  document.getElementById('status').textContent = '✅ 已生成 data.json，请到下载目录取用并上传至GitHub';
+});
+</script>
+</body>
+</html>
