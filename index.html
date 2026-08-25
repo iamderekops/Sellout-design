@@ -8,13 +8,15 @@
 <style>
   :root{
     --gray-bg:#F5F5F7; --white:#FFFFFF; --black:#1D1D1F; --sub:#6E6E73;
-    --blue:#0066CC; --blue-hover:#0077ED; --border:rgba(0,0,0,0.08); --card-dark:#1D1D1F;
+    --blue:#0066CC; --border:rgba(0,0,0,0.08); --card-dark:#1D1D1F;
+    /* Muted / premium palette (low saturation, "Morandi" tones) */
+    --m1:#3A4750; --m2:#6E8894; --m3:#8FA998; --m4:#C9A876; --m5:#A67F8E; --m6:#B7B29C; --m7:#7B8A9A; --m8:#9C8AA5;
   }
   *{box-sizing:border-box;}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Helvetica Neue",Arial,sans-serif;background:var(--gray-bg);color:var(--black);}
 
   .nav{background:rgba(255,255,255,0.8); backdrop-filter:blur(20px) saturate(180%); border-bottom:1px solid var(--border);
-    position:sticky; top:0; z-index:200; padding:0 32px; height:52px; display:flex; align-items:center; justify-content:space-between;}
+    position:sticky; top:0; z-index:200; padding:0 40px; height:52px; display:flex; align-items:center; justify-content:space-between;}
   .nav-left{display:flex; align-items:center; gap:28px;}
   .nav-logo{font-weight:600; font-size:15px; letter-spacing:-0.2px;}
   .nav-links{display:flex; gap:24px; font-size:12.5px;}
@@ -25,13 +27,13 @@
   .dot.on{background:#34C759; box-shadow:0 0 0 3px rgba(52,199,89,0.2);}
   .dot.err{background:#FF3B30; box-shadow:0 0 0 3px rgba(255,59,48,0.2);}
 
-  .hero{max-width:1200px; margin:0 auto; padding:60px 32px 36px; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px;}
+  .hero{max-width:1440px; margin:0 auto; padding:60px 40px 36px; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px;}
   .hero h1{font-size:52px; font-weight:700; letter-spacing:-1.5px; margin:0; line-height:1.05;}
   .hero p.sub{color:var(--sub); font-size:16px; margin:10px 0 0;}
   .hero-links a{color:var(--blue); font-size:14px; text-decoration:none;}
   .hero-links a:hover{text-decoration:underline;}
 
-  .container{max-width:1200px; margin:0 auto; padding:0 32px 80px;}
+  .container{max-width:1440px; margin:0 auto; padding:0 40px 80px;}
   .empty-state{text-align:center; padding:80px 20px; color:var(--sub);}
   .empty-state h2{color:var(--black); font-size:24px; margin-bottom:8px;}
   .diag{font-size:12px; color:var(--sub); margin-top:14px; background:#fff; border-radius:12px; padding:12px 16px; display:inline-block; border:1px solid var(--border);}
@@ -60,7 +62,7 @@
     cursor:pointer; color:var(--black); min-width:150px; justify-content:space-between; transition:all .15s;
   }
   .dropdown-btn:hover{background:#EAEAEC;}
-  .dropdown-btn.has-selection{background:var(--black); color:#fff;}
+  .dropdown-btn.has-selection{background:var(--m1); color:#fff;}
   .dropdown-btn .arrow{font-size:10px; opacity:.6; transition:transform .2s;}
   .dropdown.open .dropdown-btn .arrow{transform:rotate(180deg);}
   .dropdown-panel{
@@ -74,7 +76,7 @@
   .dropdown-panel-head .clear-one{font-size:11.5px; color:var(--sub); cursor:pointer;}
   .option-row{display:flex; align-items:center; gap:10px; padding:8px 6px; border-radius:8px; cursor:pointer; font-size:13.5px;}
   .option-row:hover{background:var(--gray-bg);}
-  .option-row input{accent-color:var(--black); width:15px; height:15px;}
+  .option-row input{accent-color:var(--m1); width:15px; height:15px;}
   .option-row .cnt{margin-left:auto; font-size:11.5px; color:var(--sub);}
   .option-empty{font-size:12.5px; color:var(--sub); padding:12px 6px; text-align:center;}
 
@@ -84,27 +86,54 @@
   .result-summary{font-size:12.5px; color:var(--sub); margin-bottom:14px; display:flex; align-items:center; justify-content:space-between;}
   .clear-link{color:var(--blue); cursor:pointer; font-weight:500;}
 
-  .dict-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px;}
-  .dict-item{background:var(--gray-bg); border:1px solid var(--border); border-radius:16px; padding:16px 18px; cursor:pointer; transition:all .2s ease;}
-  .dict-item:hover{background:#EFEFF1;}
-  .dict-title{font-size:14px; font-weight:600;}
-  .dict-path{font-size:11.5px; color:var(--sub); margin-top:3px;}
-  .badges{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;}
-  .badge{font-size:11px; padding:3px 11px; border-radius:980px; font-weight:500;}
-  .badge.online{background:rgba(0,102,204,0.1); color:var(--blue);}
-  .badge.offline{background:rgba(0,0,0,0.08); color:var(--sub);}
-  .badge.div{background:rgba(0,0,0,0.06); color:var(--black);}
-  .badge.freq{background:rgba(52,199,89,0.12); color:#248A3D;}
-  .dict-detail{max-height:0; overflow:hidden; transition:max-height .3s ease; font-size:12.5px; color:var(--sub); line-height:1.7; white-space:pre-wrap;}
-  .dict-item.expanded .dict-detail{max-height:600px; margin-top:12px; padding-top:12px; border-top:1px solid var(--border);}
-  .detail-row{margin-bottom:8px;}
-  .detail-row b{color:var(--black); font-weight:600;}
+  /* ---------- Narrow compact cards, click to expand modal ---------- */
+  .dict-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:12px;}
+  .dict-item{
+    background:var(--white); border:1px solid var(--border); border-radius:16px; padding:16px;
+    cursor:pointer; transition:all .2s ease;
+  }
+  .dict-item:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,0.08); border-color:transparent;}
+  .dict-title{font-size:13.5px; font-weight:600; line-height:1.3;}
+  .dict-path{font-size:11px; color:var(--sub); margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .badges{display:flex; gap:5px; flex-wrap:wrap; margin-top:10px;}
+  .badge{font-size:10.5px; padding:3px 9px; border-radius:980px; font-weight:500;}
+  .badge.online{background:rgba(110,136,148,0.15); color:var(--m2);}
+  .badge.offline{background:rgba(0,0,0,0.06); color:var(--sub);}
+  .badge.div{background:rgba(58,71,80,0.08); color:var(--m1);}
+  .badge.freq{background:rgba(143,169,152,0.18); color:#5C7A64;}
   .empty-note{text-align:center; color:var(--sub); padding:24px; font-size:13px; grid-column:1/-1;}
 
-  @media(max-width:900px){
+  /* ---------- Modal ---------- */
+  .modal-overlay{
+    display:none; position:fixed; inset:0; background:rgba(29,29,31,0.5); backdrop-filter:blur(6px);
+    z-index:500; align-items:center; justify-content:center; padding:24px;
+  }
+  .modal-overlay.show{display:flex;}
+  .modal-box{
+    background:#fff; border-radius:24px; max-width:640px; width:100%; max-height:82vh; overflow-y:auto;
+    padding:36px; position:relative; box-shadow:0 30px 80px rgba(0,0,0,0.3);
+    animation:modalPop .25s ease;
+  }
+  @keyframes modalPop{ from{opacity:0; transform:scale(0.94) translateY(10px);} to{opacity:1; transform:scale(1) translateY(0);} }
+  .modal-close{
+    position:absolute; top:20px; right:20px; width:32px; height:32px; border-radius:50%;
+    background:var(--gray-bg); border:none; cursor:pointer; font-size:16px; color:var(--sub);
+    display:flex; align-items:center; justify-content:center; transition:background .15s;
+  }
+  .modal-close:hover{background:#e5e5e7;}
+  .modal-title{font-size:26px; font-weight:700; letter-spacing:-0.5px; margin:0 0 6px; padding-right:40px;}
+  .modal-path{font-size:13px; color:var(--sub); margin-bottom:16px;}
+  .modal-badges{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:24px;}
+  .modal-detail-row{margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--border);}
+  .modal-detail-row:last-child{border-bottom:none;}
+  .modal-detail-row .k{font-size:11.5px; font-weight:600; color:var(--sub); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px;}
+  .modal-detail-row .v{font-size:14px; color:var(--black); line-height:1.7; white-space:pre-wrap;}
+
+  @media(max-width:1000px){
     .hero h1{font-size:36px;}
     .kpi-grid{grid-template-columns:repeat(2,1fr);}
-    .grid-2, .dict-grid{grid-template-columns:1fr;}
+    .grid-2{grid-template-columns:1fr;}
+    .dict-grid{grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));}
   }
 </style>
 </head>
@@ -116,7 +145,6 @@
     <div class="nav-links">
       <a data-target="overviewSection">数据总览</a>
       <a data-target="detailSection">渠道筛选</a>
-      <a data-target="chartFreqCard" id="freqNavLink" style="display:none;">刷新口径</a>
     </div>
   </div>
   <div class="nav-status">
@@ -156,7 +184,7 @@
 
     <div class="card" id="detailSection">
       <h3>数据字典明细</h3>
-      <div class="desc">点击下方筛选器展开勾选，支持多选（可切换为单选）；各层级自动联动，只显示当前上级筛选下真实存在的选项</div>
+      <div class="desc">点击下方筛选器展开勾选，支持多选（可切换为单选）；各层级自动联动，只显示当前上级筛选下真实存在的选项；点击卡片查看完整详情</div>
 
       <div class="filter-row" id="filterRow"></div>
 
@@ -172,11 +200,16 @@
   </div>
 </div>
 
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box" id="modalBox"></div>
+</div>
+
 <script>
 let rawRows = [];
 let charts = {};
 const $ = id => document.getElementById(id);
-const PALETTE = ['#1D1D1F','#0066CC','#34C759','#FF9F0A','#8E44AD','#5AC8FA','#FF3B30','#AF52DE'];
+const PALETTE = ['#3A4750','#6E8894','#8FA998','#C9A876','#A67F8E','#B7B29C','#7B8A9A','#9C8AA5'];
 
 const FILTER_DEFS = [
   { key:'division', field:'division_name', label:'Division' },
@@ -185,7 +218,7 @@ const FILTER_DEFS = [
   { key:'l2', field:'channel_l2', label:'Channel L2' }
 ];
 
-const state = {}; // key -> { selected:Set, multi:bool }
+const state = {};
 FILTER_DEFS.forEach(f => state[f.key] = { selected:new Set(), multi:true });
 
 async function init(){
@@ -236,14 +269,13 @@ function render(){
 
   destroyChart('online');
   charts.online = new Chart($('chartOnline'), { type:'bar',
-    data:{ labels:Object.keys(onlineCount), datasets:[{ data:Object.values(onlineCount), backgroundColor:['#1D1D1F','#0066CC'], borderRadius:10, maxBarThickness:60 }]},
+    data:{ labels:Object.keys(onlineCount), datasets:[{ data:Object.values(onlineCount), backgroundColor:['#3A4750','#6E8894'], borderRadius:10, maxBarThickness:60 }]},
     options:{ plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, grid:{color:'#eee'}}, x:{grid:{display:false}}} } });
 
   buildFilterRow();
   applyFiltersAndRenderList();
 }
 
-/* ---------- Dropdown filters with cascading ---------- */
 function rowsAfter(excludeKey){
   let rows = rawRows;
   FILTER_DEFS.forEach(f => {
@@ -258,12 +290,10 @@ function buildFilterRow(){
   const row = $('filterRow');
   row.innerHTML = '';
   FILTER_DEFS.forEach(f => {
-    const pool = rowsAfter(f.key); // options depend on ALL OTHER active filters (cascading both ways)
+    const pool = rowsAfter(f.key);
     const countMap = countBy(pool, f.field);
     const options = Object.keys(countMap).sort();
     const sel = state[f.key].selected;
-
-    // drop selections that are no longer valid given current pool
     [...sel].forEach(v => { if(!countMap[v]) sel.delete(v); });
 
     const dd = document.createElement('div');
@@ -306,7 +336,6 @@ function buildFilterRow(){
         }
         buildFilterRow();
         applyFiltersAndRenderList();
-        // re-open the same dropdown after rebuild for continued multi-selection
         const reopened = $('dd-' + key);
         if(reopened) reopened.classList.add('open');
       });
@@ -349,12 +378,10 @@ $('clearFilters').addEventListener('click', () => {
   applyFiltersAndRenderList();
 });
 
-/* ---------- Fuzzy search ---------- */
 function fuzzyMatch(text, query){
   text = text.toLowerCase(); query = query.toLowerCase().replace(/\s+/g,'');
   if(!query) return true;
-  if(text.includes(query)) return true; // direct substring first
-  // subsequence fuzzy match fallback
+  if(text.includes(query)) return true;
   let ti = 0;
   for(let qi=0; qi<query.length; qi++){
     const ch = query[qi];
@@ -370,10 +397,12 @@ function fuzzyMatch(text, query){
 
 $('searchInput').addEventListener('input', applyFiltersAndRenderList);
 
+let currentRows = [];
 function applyFiltersAndRenderList(){
   let rows = rowsAfter(null);
   const q = $('searchInput').value.trim();
   if(q) rows = rows.filter(r => fuzzyMatch(Object.values(r).join(' '), q));
+  currentRows = rows;
 
   $('resultCount').textContent = `共 ${rows.length} 条结果`;
   const grid = $('dictGrid');
@@ -382,30 +411,17 @@ function applyFiltersAndRenderList(){
     grid.innerHTML = '<div class="empty-note">没有匹配的记录，请调整筛选条件</div>';
     return;
   }
-  rows.slice(0,200).forEach(r => {
+  rows.slice(0,200).forEach((r, idx) => {
     const item = document.createElement('div');
     item.className = 'dict-item';
     item.innerHTML = `
-      <div>
-        <div class="dict-title">${r.channel_l3 || r.channel_l2 || r.channel_l1 || '未命名条目'}</div>
-        <div class="dict-path">${r.channel_l1} › ${r.channel_l2} › ${r.channel_l3}</div>
-      </div>
+      <div class="dict-title">${r.channel_l3 || r.channel_l2 || r.channel_l1 || '未命名条目'}</div>
+      <div class="dict-path">${r.channel_l1} › ${r.channel_l2}</div>
       <div class="badges">
         <span class="badge div">${r.division_name}</span>
         <span class="badge ${r.channel_l0==='Online'?'online':'offline'}">${r.channel_l0}</span>
-        <span class="badge freq">${(r.frequency||'').includes('daily') ? 'daily' : (r.frequency||'').includes('monthly') ? 'monthly' : '其他频率'}</span>
-      </div>
-      <div class="dict-detail">
-        <div class="detail-row"><b>数据源：</b>${r.source || '-'}</div>
-        <div class="detail-row"><b>粒度：</b>${r.granularity || '-'}</div>
-        <div class="detail-row"><b>刷新频率：</b>${r.frequency || '-'}</div>
-        <div class="detail-row"><b>Sellout Time口径：</b>${r.sellout_time || '-'}</div>
-        <div class="detail-row"><b>NSO计算逻辑：</b>${r.nso_calc || '-'}</div>
-        <div class="detail-row"><b>Ingestion Logic：</b>${r.ingestion_logic || '-'}</div>
-        <div class="detail-row"><b>Processing Logic：</b>${r.processing_logic || '-'}</div>
-        <div class="detail-row"><b>备注：</b>${r.remark || '-'}</div>
       </div>`;
-    item.addEventListener('click', () => item.classList.toggle('expanded'));
+    item.addEventListener('click', () => openModal(idx));
     grid.appendChild(item);
   });
   if(rows.length > 200){
@@ -416,7 +432,34 @@ function applyFiltersAndRenderList(){
   }
 }
 
-/* ---------- Functional nav links (smooth scroll) ---------- */
+function openModal(idx){
+  const r = currentRows[idx];
+  const box = $('modalBox');
+  box.innerHTML = `
+    <button class="modal-close" id="modalCloseBtn">✕</button>
+    <div class="modal-title">${r.channel_l3 || r.channel_l2 || r.channel_l1 || '未命名条目'}</div>
+    <div class="modal-path">${r.channel_l1} › ${r.channel_l2} › ${r.channel_l3}</div>
+    <div class="modal-badges">
+      <span class="badge div">${r.division_name}</span>
+      <span class="badge ${r.channel_l0==='Online'?'online':'offline'}">${r.channel_l0}</span>
+      <span class="badge freq">${(r.frequency||'').includes('daily') ? 'daily' : (r.frequency||'').includes('monthly') ? 'monthly' : '其他频率'}</span>
+    </div>
+    <div class="modal-detail-row"><div class="k">数据源</div><div class="v">${r.source || '-'}</div></div>
+    <div class="modal-detail-row"><div class="k">粒度</div><div class="v">${r.granularity || '-'}</div></div>
+    <div class="modal-detail-row"><div class="k">刷新频率</div><div class="v">${r.frequency || '-'}</div></div>
+    <div class="modal-detail-row"><div class="k">Sellout Time 口径</div><div class="v">${r.sellout_time || '-'}</div></div>
+    <div class="modal-detail-row"><div class="k">NSO 计算逻辑</div><div class="v">${r.nso_calc || '-'}</div></div>
+    <div class="modal-detail-row"><div class="k">Ingestion Logic</div><div class="v">${r.ingestion_logic || '-'}</div></div>
+    <div class="modal-detail-row"><div class="k">Processing Logic</div><div class="v">${r.processing_logic || '-'}</div></div>
+    <div class="modal-detail-row"><div class="k">备注</div><div class="v">${r.remark || '-'}</div></div>
+  `;
+  $('modalOverlay').classList.add('show');
+  $('modalCloseBtn').addEventListener('click', closeModal);
+}
+function closeModal(){ $('modalOverlay').classList.remove('show'); }
+$('modalOverlay').addEventListener('click', (e) => { if(e.target.id === 'modalOverlay') closeModal(); });
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+
 document.querySelectorAll('.nav-links a').forEach(a => {
   a.addEventListener('click', (e) => {
     e.preventDefault();
