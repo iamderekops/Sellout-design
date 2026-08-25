@@ -34,11 +34,32 @@
   .seg button.active{background:#fff;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.12);}
   .search-bar{width:100%;padding:12px 16px;border-radius:14px;border:1px solid var(--border);background:#fff;font-size:14px;margin-bottom:16px;outline:none;}
   .search-bar:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,113,227,0.15);}
-  .dict-list{display:flex;flex-direction:column;gap:10px;}
-  .dict-item{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px 18px;cursor:pointer;transition:all .2s ease;}
-  .dict-item:hover{box-shadow:0 4px 16px rgba(0,0,0,0.06);transform:translateY(-1px);}
+
+  .breadcrumb{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:16px;font-size:13px;}
+  .crumb{background:rgba(0,113,227,0.1);color:var(--accent);padding:5px 14px;border-radius:980px;cursor:pointer;font-weight:500;display:flex;align-items:center;gap:6px;}
+  .crumb:hover{background:rgba(0,113,227,0.18);}
+  .crumb .x{font-weight:700;opacity:.6;}
+  .crumb-sep{color:var(--sub);}
+
+  .tree-list{display:flex;flex-direction:column;gap:8px;}
+  .tree-node{background:#fff;border:1px solid var(--border);border-radius:14px; overflow:hidden;}
+  .tree-node-head{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .15s;}
+  .tree-node-head:hover{background:#FAFAFB;}
+  .tree-node-title{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;}
+  .chevron{font-size:11px;color:var(--sub);transition:transform .2s;}
+  .tree-node.expanded > .tree-node-head .chevron{transform:rotate(90deg);}
+  .count-badge{font-size:11px;font-weight:600;color:var(--accent);background:rgba(0,113,227,0.1);padding:3px 10px;border-radius:980px;}
+  .l1-icon{width:8px;height:8px;border-radius:50%;background:var(--accent);}
+  .l2-icon{width:7px;height:7px;border-radius:50%;background:var(--accent2);}
+  .tree-children{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .tree-node.expanded > .tree-children{max-height:6000px;}
+  .l2-list{padding:0 10px 10px 26px;display:flex;flex-direction:column;gap:6px;}
+  .l3-list{padding:4px 14px 12px 26px;display:flex;flex-direction:column;gap:8px;}
+
+  .dict-item{background:#FAFAFB;border:1px solid var(--border);border-radius:12px;padding:12px 16px;cursor:pointer;transition:all .2s ease;}
+  .dict-item:hover{box-shadow:0 4px 14px rgba(0,0,0,0.06);}
   .dict-item-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-  .dict-title{font-size:14px;font-weight:600;}
+  .dict-title{font-size:13.5px;font-weight:600;}
   .badges{display:flex;gap:6px;flex-wrap:wrap;}
   .badge{font-size:11px;padding:3px 10px;border-radius:980px;font-weight:500;}
   .badge.online{background:rgba(0,113,227,0.12);color:var(--accent);}
@@ -51,6 +72,7 @@
   .detail-row b{color:var(--text);font-weight:600;}
   .updated-badge{font-size:11px;color:var(--sub);background:rgba(0,0,0,0.05);padding:4px 12px;border-radius:980px;}
   .diag{font-size:12px;color:var(--sub);margin-top:10px;text-align:left;background:#fff;border-radius:12px;padding:12px 16px;display:inline-block;}
+  .empty-note{text-align:center;color:var(--sub);padding:24px;font-size:13px;}
   @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.grid-2{grid-template-columns:1fr;}}
 </style>
 </head>
@@ -85,15 +107,17 @@
       <div class="card"><h3>数据刷新频率分布</h3><div class="desc">daily / monthly refresh 等口径统计</div><div class="chart-wrap"><canvas id="chartFreq"></canvas></div></div>
       <div class="card"><h3>Top Channel L2 渠道</h3><div class="desc">出现频次最高的10个二级渠道</div><div class="chart-wrap"><canvas id="chartL2"></canvas></div></div>
     </div>
+
     <div class="card">
-      <h3 style="margin-bottom:14px;">数据字典明细</h3>
+      <h3 style="margin-bottom:4px;">数据字典明细 · Channel 层级结构</h3>
+      <div class="desc">点击 Channel L1 展开查看 L2，再点击 L2 展开查看 L3 明细。也可直接搜索关键词跳过层级直接定位。</div>
       <div class="seg" id="filterSeg">
         <button class="active" data-f="all">全部</button>
         <button data-f="Online">Online</button>
         <button data-f="Offline">Offline</button>
       </div>
       <input class="search-bar" id="searchInput" placeholder="🔍 搜索 Division / Channel / 关键词...">
-      <div class="dict-list" id="dictList"></div>
+      <div id="treeContainer"></div>
     </div>
   </div>
 </div>
@@ -170,35 +194,119 @@ function render(){
     data:{ labels:topL2.map(x=>x[0]), datasets:[{ data:topL2.map(x=>x[1]), backgroundColor:'#8E44AD', borderRadius:10, maxBarThickness:24 }]},
     options:{ indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{beginAtZero:true, grid:{color:'#eee'}}, y:{grid:{display:false}}} } });
 
-  renderDictList('all','');
+  buildTree();
 }
 
+/* ---------- Tree structure logic ---------- */
 let currentFilter = 'all';
+let expandedL1 = new Set();
+let expandedL2 = new Set();
+
 $('filterSeg').addEventListener('click', e => {
   if(e.target.tagName !== 'BUTTON') return;
   document.querySelectorAll('#filterSeg button').forEach(b=>b.classList.remove('active'));
   e.target.classList.add('active');
   currentFilter = e.target.dataset.f;
-  renderDictList(currentFilter, $('searchInput').value);
+  buildTree();
 });
-$('searchInput').addEventListener('input', e => renderDictList(currentFilter, e.target.value));
+$('searchInput').addEventListener('input', () => buildTree());
 
-function renderDictList(filter, query){
-  const q = query.trim().toLowerCase();
+function getFilteredRows(){
+  const q = $('searchInput').value.trim().toLowerCase();
   let rows = rawRows;
-  if(filter !== 'all') rows = rows.filter(r => r.channel_l0 === filter);
+  if(currentFilter !== 'all') rows = rows.filter(r => r.channel_l0 === currentFilter);
   if(q) rows = rows.filter(r => Object.values(r).some(v => (v||'').toString().toLowerCase().includes(q)));
+  return rows;
+}
 
-  const list = $('dictList');
-  list.innerHTML = '';
+function buildTree(){
+  const rows = getFilteredRows();
+  const query = $('searchInput').value.trim();
+  const container = $('treeContainer');
+
   if(rows.length === 0){
-    list.innerHTML = '<div style="text-align:center;color:var(--sub);padding:30px;font-size:13px;">没有匹配的记录</div>';
+    container.innerHTML = '<div class="empty-note">没有匹配的记录</div>';
     return;
   }
-  rows.slice(0,150).forEach(r => {
-    const item = document.createElement('div');
-    item.className = 'dict-item';
-    item.innerHTML = `
+
+  // If searching, show flat matched leaf list instead of full tree (easier to scan results)
+  if(query){
+    let html = '<div class="l3-list" style="padding-left:0;">';
+    rows.slice(0,150).forEach(r => { html += renderLeafCard(r); });
+    html += '</div>';
+    if(rows.length > 150){
+      html += `<div class="empty-note">仅展示前150条，共 ${rows.length} 条匹配结果，请细化关键词</div>`;
+    }
+    container.innerHTML = html;
+    bindLeafEvents(container);
+    return;
+  }
+
+  // Group by L1 -> L2 -> list of leaf rows (L3)
+  const l1Groups = {};
+  rows.forEach(r => {
+    const l1 = r.channel_l1 || '未标注';
+    const l2 = r.channel_l2 || '未标注';
+    if(!l1Groups[l1]) l1Groups[l1] = {};
+    if(!l1Groups[l1][l2]) l1Groups[l1][l2] = [];
+    l1Groups[l1][l2].push(r);
+  });
+
+  let html = '<div class="tree-list">';
+  Object.keys(l1Groups).sort().forEach(l1 => {
+    const l2Groups = l1Groups[l1];
+    const l1Total = Object.values(l2Groups).reduce((s,arr)=>s+arr.length,0);
+    const isL1Expanded = expandedL1.has(l1);
+    html += `<div class="tree-node ${isL1Expanded?'expanded':''}" data-l1="${escAttr(l1)}">
+      <div class="tree-node-head l1-head">
+        <div class="tree-node-title"><span class="chevron">▶</span><span class="l1-icon"></span>${l1}</div>
+        <span class="count-badge">${l1Total} 项</span>
+      </div>
+      <div class="tree-children"><div class="l2-list">`;
+
+    Object.keys(l2Groups).sort().forEach(l2 => {
+      const leafRows = l2Groups[l2];
+      const l2Key = l1 + '||' + l2;
+      const isL2Expanded = expandedL2.has(l2Key);
+      html += `<div class="tree-node ${isL2Expanded?'expanded':''}" data-l2key="${escAttr(l2Key)}">
+        <div class="tree-node-head l2-head">
+          <div class="tree-node-title"><span class="chevron">▶</span><span class="l2-icon"></span>${l2}</div>
+          <span class="count-badge">${leafRows.length} 项</span>
+        </div>
+        <div class="tree-children"><div class="l3-list">`;
+      leafRows.forEach(r => { html += renderLeafCard(r); });
+      html += `</div></div></div>`;
+    });
+
+    html += `</div></div></div>`;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+
+  // Bind expand/collapse events
+  container.querySelectorAll('.l1-head').forEach(head => {
+    head.addEventListener('click', () => {
+      const node = head.closest('.tree-node');
+      const l1 = node.dataset.l1;
+      if(expandedL1.has(l1)) expandedL1.delete(l1); else expandedL1.add(l1);
+      node.classList.toggle('expanded');
+    });
+  });
+  container.querySelectorAll('.l2-head').forEach(head => {
+    head.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const node = head.closest('.tree-node[data-l2key]');
+      const key = node.dataset.l2key;
+      if(expandedL2.has(key)) expandedL2.delete(key); else expandedL2.add(key);
+      node.classList.toggle('expanded');
+    });
+  });
+  bindLeafEvents(container);
+}
+
+function renderLeafCard(r){
+  return `
+    <div class="dict-item">
       <div class="dict-item-head">
         <div class="dict-title">${r.channel_l3 || r.channel_l2 || r.channel_l1 || '未命名条目'}</div>
         <div class="badges">
@@ -217,17 +325,20 @@ function renderDictList(filter, query){
         <div class="detail-row"><b>Ingestion Logic：</b>${r.ingestion_logic || '-'}</div>
         <div class="detail-row"><b>Processing Logic：</b>${r.processing_logic || '-'}</div>
         <div class="detail-row"><b>备注：</b>${r.remark || '-'}</div>
-      </div>`;
-    item.addEventListener('click', () => item.classList.toggle('expanded'));
-    list.appendChild(item);
-  });
-  if(rows.length > 150){
-    const note = document.createElement('div');
-    note.style.cssText='text-align:center;color:var(--sub);font-size:12px;padding:10px;';
-    note.textContent = `仅展示前150条，共 ${rows.length} 条匹配结果，请用搜索进一步缩小范围`;
-    list.appendChild(note);
-  }
+      </div>
+    </div>`;
 }
+
+function bindLeafEvents(container){
+  container.querySelectorAll('.dict-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      item.classList.toggle('expanded');
+    });
+  });
+}
+
+function escAttr(s){ return String(s).replace(/"/g,'&quot;'); }
 
 init();
 </script>
