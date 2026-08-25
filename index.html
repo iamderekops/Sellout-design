@@ -18,18 +18,15 @@
     position:sticky; top:0; z-index:200; padding:0 40px; height:56px; display:flex; align-items:center; justify-content:space-between;}
   .nav-left{display:flex; align-items:center; gap:28px;}
 
-  /* ---------- ONE L'ORÉAL Data logo (text/dot recreation, transparent bg) ---------- */
   .oneloreal-logo{display:flex; align-items:center; gap:8px; line-height:1;}
   .oneloreal-logo .top-row{display:flex; flex-direction:column;}
   .oneloreal-logo .brand-line{font-size:9.5px; font-weight:800; letter-spacing:0.8px; color:var(--black); text-transform:uppercase;}
-  .oneloreal-logo .brand-line .accent{font-weight:800;}
   .oneloreal-logo .data-row{display:flex; align-items:center; gap:3px; margin-top:1px;}
   .dot-d{
     display:grid; grid-template-columns:repeat(3, 3.5px); grid-template-rows:repeat(4, 3.5px); gap:1.6px;
     margin-right:2px;
   }
   .dot-d span{width:3.5px; height:3.5px; border-radius:50%; background:var(--black); opacity:0.85;}
-  /* mask to form a D shape using visibility */
   .dot-d span.off{opacity:0;}
   .data-text{font-size:19px; font-weight:800; letter-spacing:-0.5px; color:var(--black);}
 
@@ -152,7 +149,6 @@
 
 <div class="nav">
   <div class="nav-left">
-    <!-- ONE L'ORÉAL Data logo recreation (transparent background) -->
     <div class="oneloreal-logo">
       <div class="dot-d">
         <span></span><span></span><span class="off"></span>
@@ -212,7 +208,7 @@
 
       <div class="filter-row" id="filterRow"></div>
 
-      <input class="search-bar" id="searchInput" placeholder="🔍 模糊搜索关键词（可与上方筛选器组合使用）...">
+      <input class="search-bar" id="searchInput" placeholder="🔍 搜索关键词（可与上方筛选器组合使用）...">
 
       <div class="result-summary">
         <span id="resultCount">共 0 条结果</span>
@@ -401,21 +397,22 @@ $('clearFilters').addEventListener('click', () => {
   applyFiltersAndRenderList();
 });
 
-function fuzzyMatch(text, query){
-  text = text.toLowerCase(); query = query.toLowerCase().replace(/\s+/g,'');
+/* ---------- 精确搜索：只在关键识别字段里匹配，避免长文本字段导致过度模糊 ---------- */
+function fuzzyMatch(row, query){
+  query = query.toLowerCase().trim();
   if(!query) return true;
-  if(text.includes(query)) return true;
-  let ti = 0;
-  for(let qi=0; qi<query.length; qi++){
-    const ch = query[qi];
-    let found = false;
-    while(ti < text.length){
-      if(text[ti] === ch){ found = true; ti++; break; }
-      ti++;
-    }
-    if(!found) return false;
-  }
-  return true;
+
+  const searchableFields = [
+    row.division_name, row.division_code,
+    row.channel_l0, row.channel_l1, row.channel_l2, row.channel_l3,
+    row.source, row.frequency
+  ];
+  const text = searchableFields.join(' ').toLowerCase();
+
+  const normalizedText = text.replace(/\s+/g,'');
+  const normalizedQuery = query.replace(/\s+/g,'');
+
+  return text.includes(query) || normalizedText.includes(normalizedQuery);
 }
 
 $('searchInput').addEventListener('input', applyFiltersAndRenderList);
@@ -424,7 +421,7 @@ let currentRows = [];
 function applyFiltersAndRenderList(){
   let rows = rowsAfter(null);
   const q = $('searchInput').value.trim();
-  if(q) rows = rows.filter(r => fuzzyMatch(Object.values(r).join(' '), q));
+  if(q) rows = rows.filter(r => fuzzyMatch(r, q));
   currentRows = rows;
 
   $('resultCount').textContent = `共 ${rows.length} 条结果`;
