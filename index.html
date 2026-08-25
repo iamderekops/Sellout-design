@@ -14,21 +14,20 @@
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Helvetica Neue",Arial,sans-serif;background:var(--gray-bg);color:var(--black);}
 
   .nav{background:rgba(255,255,255,0.8); backdrop-filter:blur(20px) saturate(180%); border-bottom:1px solid var(--border);
-    position:sticky; top:0; z-index:100; padding:0 32px; height:52px; display:flex; align-items:center; justify-content:space-between;}
+    position:sticky; top:0; z-index:200; padding:0 32px; height:52px; display:flex; align-items:center; justify-content:space-between;}
   .nav-left{display:flex; align-items:center; gap:28px;}
   .nav-logo{font-weight:600; font-size:15px; letter-spacing:-0.2px;}
-  .nav-links{display:flex; gap:24px; font-size:12.5px; color:var(--sub);}
+  .nav-links{display:flex; gap:24px; font-size:12.5px;}
+  .nav-links a{color:var(--sub); text-decoration:none; cursor:pointer; transition:color .15s;}
+  .nav-links a:hover{color:var(--black);}
   .nav-status{display:flex; align-items:center; gap:14px; font-size:12px; color:var(--sub);}
   .dot{width:7px;height:7px;border-radius:50%;background:#C7C7CC;}
   .dot.on{background:#34C759; box-shadow:0 0 0 3px rgba(52,199,89,0.2);}
   .dot.err{background:#FF3B30; box-shadow:0 0 0 3px rgba(255,59,48,0.2);}
-  .btn{border:none; cursor:pointer; font-family:inherit; padding:7px 16px; border-radius:980px; font-size:12.5px; font-weight:500; background:var(--black); color:#fff; transition:all .2s;}
-  .btn:hover{background:#000;}
 
   .hero{max-width:1200px; margin:0 auto; padding:60px 32px 36px; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px;}
   .hero h1{font-size:52px; font-weight:700; letter-spacing:-1.5px; margin:0; line-height:1.05;}
   .hero p.sub{color:var(--sub); font-size:16px; margin:10px 0 0;}
-  .hero-links{display:flex; flex-direction:column; gap:6px; align-items:flex-end;}
   .hero-links a{color:var(--blue); font-size:14px; text-decoration:none;}
   .hero-links a:hover{text-decoration:underline;}
 
@@ -47,28 +46,39 @@
   .kpi-card.dark .sub{color:rgba(255,255,255,0.5);}
 
   .grid-2{display:grid; grid-template-columns:1.1fr 1fr; gap:16px; margin-bottom:16px;}
-  .card{background:var(--white); border-radius:22px; padding:26px; border:1px solid var(--border);}
+  .card{background:var(--white); border-radius:22px; padding:26px; border:1px solid var(--border); position:relative;}
   .card h3{margin:0 0 4px; font-size:19px; font-weight:600; letter-spacing:-0.3px;}
   .card .desc{font-size:13px; color:var(--sub); margin-bottom:16px;}
   .chart-wrap{position:relative; height:260px;}
 
-  /* ---------- Filter panel ---------- */
-  .filter-block{margin-bottom:20px;}
-  .filter-label{font-size:12.5px; font-weight:600; color:var(--sub); margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;}
-  .filter-label .mode-toggle{font-size:11.5px; color:var(--blue); cursor:pointer; font-weight:500;}
-  .chip-group{display:flex; flex-wrap:wrap; gap:8px;}
-  .chip{
-    padding:8px 16px; border-radius:980px; font-size:13px; font-weight:500; cursor:pointer;
-    background:var(--gray-bg); color:var(--black); border:1px solid transparent; transition:all .15s;
-    user-select:none;
+  /* ---------- Dropdown filter ---------- */
+  .filter-row{display:flex; flex-wrap:wrap; gap:12px; margin-bottom:18px;}
+  .dropdown{position:relative;}
+  .dropdown-btn{
+    display:flex; align-items:center; gap:8px; padding:11px 16px; border-radius:12px;
+    background:var(--gray-bg); border:1px solid var(--border); font-size:13.5px; font-weight:500;
+    cursor:pointer; color:var(--black); min-width:150px; justify-content:space-between; transition:all .15s;
   }
-  .chip:hover{background:#EAEAEC;}
-  .chip.active{background:var(--black); color:#fff;}
-  .chip .n{opacity:.55; font-weight:400; margin-left:4px;}
-  .chip.active .n{opacity:.8;}
-  .chip.disabled{opacity:.35; cursor:not-allowed;}
+  .dropdown-btn:hover{background:#EAEAEC;}
+  .dropdown-btn.has-selection{background:var(--black); color:#fff;}
+  .dropdown-btn .arrow{font-size:10px; opacity:.6; transition:transform .2s;}
+  .dropdown.open .dropdown-btn .arrow{transform:rotate(180deg);}
+  .dropdown-panel{
+    display:none; position:absolute; top:calc(100% + 8px); left:0; z-index:50;
+    background:#fff; border:1px solid var(--border); border-radius:16px; box-shadow:0 12px 32px rgba(0,0,0,0.12);
+    padding:12px; min-width:260px; max-height:340px; overflow-y:auto;
+  }
+  .dropdown.open .dropdown-panel{display:block;}
+  .dropdown-panel-head{display:flex; align-items:center; justify-content:space-between; padding:2px 4px 10px; border-bottom:1px solid var(--border); margin-bottom:8px;}
+  .dropdown-panel-head .mode-toggle{font-size:11.5px; color:var(--blue); cursor:pointer; font-weight:500;}
+  .dropdown-panel-head .clear-one{font-size:11.5px; color:var(--sub); cursor:pointer;}
+  .option-row{display:flex; align-items:center; gap:10px; padding:8px 6px; border-radius:8px; cursor:pointer; font-size:13.5px;}
+  .option-row:hover{background:var(--gray-bg);}
+  .option-row input{accent-color:var(--black); width:15px; height:15px;}
+  .option-row .cnt{margin-left:auto; font-size:11.5px; color:var(--sub);}
+  .option-empty{font-size:12.5px; color:var(--sub); padding:12px 6px; text-align:center;}
 
-  .search-bar{width:100%; padding:13px 18px; border-radius:14px; border:1px solid var(--border); background:var(--gray-bg); font-size:14px; margin:16px 0; outline:none;}
+  .search-bar{width:100%; padding:13px 18px; border-radius:14px; border:1px solid var(--border); background:var(--gray-bg); font-size:14px; margin:8px 0 16px; outline:none;}
   .search-bar:focus{border-color:var(--blue); box-shadow:0 0 0 3px rgba(0,102,204,0.12); background:#fff;}
 
   .result-summary{font-size:12.5px; color:var(--sub); margin-bottom:14px; display:flex; align-items:center; justify-content:space-between;}
@@ -77,7 +87,6 @@
   .dict-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px;}
   .dict-item{background:var(--gray-bg); border:1px solid var(--border); border-radius:16px; padding:16px 18px; cursor:pointer; transition:all .2s ease;}
   .dict-item:hover{background:#EFEFF1;}
-  .dict-item-head{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; flex-wrap:wrap;}
   .dict-title{font-size:14px; font-weight:600;}
   .dict-path{font-size:11.5px; color:var(--sub); margin-top:3px;}
   .badges{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;}
@@ -104,7 +113,11 @@
 <div class="nav">
   <div class="nav-left">
     <div class="nav-logo">◆ Sellout Design</div>
-    <div class="nav-links"><span>数据字典</span><span>渠道筛选</span><span>刷新口径</span></div>
+    <div class="nav-links">
+      <a data-target="overviewSection">数据总览</a>
+      <a data-target="detailSection">渠道筛选</a>
+      <a data-target="chartFreqCard" id="freqNavLink" style="display:none;">刷新口径</a>
+    </div>
   </div>
   <div class="nav-status">
     <span id="statusText">正在连接数据源...</span>
@@ -115,7 +128,7 @@
 <div class="hero">
   <div>
     <h1>数据字典。<br>按渠道筛选查看。</h1>
-    <p class="sub">Sellout Design 渠道口径与取数逻辑，支持多维度筛选。</p>
+    <p class="sub">Sellout Design 渠道口径与取数逻辑，支持多维度组合筛选。</p>
   </div>
   <div class="hero-links"><a href="#detailSection">查看数据明细 ↓</a></div>
 </div>
@@ -129,7 +142,7 @@
   </div>
 
   <div id="dashboard" style="display:none;">
-    <div class="kpi-grid">
+    <div class="kpi-grid" id="overviewSection">
       <div class="kpi-card dark"><div class="label">总记录数</div><div class="value" id="kpiTotal">-</div><div class="sub">条数据字典条目</div></div>
       <div class="kpi-card"><div class="label">Division 数量</div><div class="value" id="kpiDivision">-</div><div class="sub" id="kpiDivisionList">-</div></div>
       <div class="kpi-card"><div class="label">Channel L1 数量</div><div class="value" id="kpiL1">-</div><div class="sub">E-Boutique / Social / 其他</div></div>
@@ -140,36 +153,14 @@
       <div class="card"><h3>Division 分布</h3><div class="desc">各事业部下的数据字典条目数量</div><div class="chart-wrap"><canvas id="chartDivision"></canvas></div></div>
       <div class="card"><h3>Online / Offline</h3><div class="desc">Channel L0 层级分布</div><div class="chart-wrap"><canvas id="chartOnline"></canvas></div></div>
     </div>
-    <div class="grid-2">
-      <div class="card"><h3>刷新频率</h3><div class="desc">daily / monthly refresh 等口径统计</div><div class="chart-wrap"><canvas id="chartFreq"></canvas></div></div>
-      <div class="card"><h3>Top Channel L2</h3><div class="desc">出现频次最高的10个二级渠道</div><div class="chart-wrap"><canvas id="chartL2"></canvas></div></div>
-    </div>
 
     <div class="card" id="detailSection">
       <h3>数据字典明细</h3>
-      <div class="desc">通过下方筛选器组合查询：Division / Channel L0 / Channel L1 / Channel L2 均支持多选</div>
+      <div class="desc">点击下方筛选器展开勾选，支持多选（可切换为单选）；各层级自动联动，只显示当前上级筛选下真实存在的选项</div>
 
-      <div class="filter-block">
-        <div class="filter-label">Division <span class="mode-toggle" id="divModeToggle">切换为单选</span></div>
-        <div class="chip-group" id="divChips"></div>
-      </div>
+      <div class="filter-row" id="filterRow"></div>
 
-      <div class="filter-block">
-        <div class="filter-label">Channel L0</div>
-        <div class="chip-group" id="l0Chips"></div>
-      </div>
-
-      <div class="filter-block">
-        <div class="filter-label">Channel L1 <span class="mode-toggle" id="l1ModeToggle">切换为单选</span></div>
-        <div class="chip-group" id="l1Chips"></div>
-      </div>
-
-      <div class="filter-block">
-        <div class="filter-label">Channel L2 <span class="mode-toggle" id="l2ModeToggle">切换为单选</span></div>
-        <div class="chip-group" id="l2Chips"></div>
-      </div>
-
-      <input class="search-bar" id="searchInput" placeholder="🔍 搜索关键词（可与上方筛选器组合使用）...">
+      <input class="search-bar" id="searchInput" placeholder="🔍 模糊搜索关键词（可与上方筛选器组合使用）...">
 
       <div class="result-summary">
         <span id="resultCount">共 0 条结果</span>
@@ -187,16 +178,15 @@ let charts = {};
 const $ = id => document.getElementById(id);
 const PALETTE = ['#1D1D1F','#0066CC','#34C759','#FF9F0A','#8E44AD','#5AC8FA','#FF3B30','#AF52DE'];
 
-// filter state
-const state = {
-  division: new Set(),
-  l0: new Set(),
-  l1: new Set(),
-  l2: new Set(),
-  divMulti: true,
-  l1Multi: true,
-  l2Multi: true
-};
+const FILTER_DEFS = [
+  { key:'division', field:'division_name', label:'Division' },
+  { key:'l0', field:'channel_l0', label:'Channel L0' },
+  { key:'l1', field:'channel_l1', label:'Channel L1' },
+  { key:'l2', field:'channel_l2', label:'Channel L2' }
+];
+
+const state = {}; // key -> { selected:Set, multi:bool }
+FILTER_DEFS.forEach(f => state[f.key] = { selected:new Set(), multi:true });
 
 async function init(){
   try{
@@ -249,110 +239,141 @@ function render(){
     data:{ labels:Object.keys(onlineCount), datasets:[{ data:Object.values(onlineCount), backgroundColor:['#1D1D1F','#0066CC'], borderRadius:10, maxBarThickness:60 }]},
     options:{ plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, grid:{color:'#eee'}}, x:{grid:{display:false}}} } });
 
-  const freqCount = countBy(rawRows,'frequency');
-  const freqLabels = Object.keys(freqCount).map(f => f.length>16? f.slice(0,16)+'…': f);
-  destroyChart('freq');
-  charts.freq = new Chart($('chartFreq'), { type:'bar',
-    data:{ labels:freqLabels, datasets:[{ data:Object.values(freqCount), backgroundColor:'#34C759', borderRadius:10, maxBarThickness:36 }]},
-    options:{ indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{beginAtZero:true, grid:{color:'#eee'}}, y:{grid:{display:false}}} } });
-
-  const l2Count = countBy(rawRows,'channel_l2');
-  const topL2 = Object.entries(l2Count).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  destroyChart('l2');
-  charts.l2 = new Chart($('chartL2'), { type:'bar',
-    data:{ labels:topL2.map(x=>x[0]), datasets:[{ data:topL2.map(x=>x[1]), backgroundColor:'#0066CC', borderRadius:10, maxBarThickness:24 }]},
-    options:{ indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{beginAtZero:true, grid:{color:'#eee'}}, y:{grid:{display:false}}} } });
-
-  buildFilterChips();
+  buildFilterRow();
   applyFiltersAndRenderList();
 }
 
-/* ---------- Filter chip building (cascading options) ---------- */
-function uniqueVals(arr, key){
-  return [...new Set(arr.map(r => (r[key]||'未标注').toString().trim() || '未标注'))].sort();
-}
-
-function rowsAfter(levels){
-  // levels: array of filter keys to apply in order, used to compute cascading option pools
+/* ---------- Dropdown filters with cascading ---------- */
+function rowsAfter(excludeKey){
   let rows = rawRows;
-  levels.forEach(key => {
-    const set = state[key];
-    if(set.size > 0) rows = rows.filter(r => set.has((r[fieldNameFor(key)]||'未标注').toString().trim() || '未标注'));
+  FILTER_DEFS.forEach(f => {
+    if(f.key === excludeKey) return;
+    const sel = state[f.key].selected;
+    if(sel.size > 0) rows = rows.filter(r => sel.has((r[f.field]||'未标注').toString().trim() || '未标注'));
   });
   return rows;
 }
-function fieldNameFor(key){
-  return {division:'division_name', l0:'channel_l0', l1:'channel_l1', l2:'channel_l2'}[key];
-}
 
-function buildFilterChips(){
-  renderChipGroup('divChips', 'division', uniqueVals(rawRows, 'division_name'), rawRows);
-  renderChipGroup('l0Chips', 'l0', uniqueVals(rawRows, 'channel_l0'), rowsAfter(['division']));
-  renderChipGroup('l1Chips', 'l1', null, rowsAfter(['division','l0']), 'channel_l1');
-  renderChipGroup('l2Chips', 'l2', null, rowsAfter(['division','l0','l1']), 'channel_l2');
-}
+function buildFilterRow(){
+  const row = $('filterRow');
+  row.innerHTML = '';
+  FILTER_DEFS.forEach(f => {
+    const pool = rowsAfter(f.key); // options depend on ALL OTHER active filters (cascading both ways)
+    const countMap = countBy(pool, f.field);
+    const options = Object.keys(countMap).sort();
+    const sel = state[f.key].selected;
 
-function renderChipGroup(containerId, stateKey, fixedOptions, poolRows, fieldKey){
-  const options = fixedOptions || uniqueVals(poolRows, fieldKey);
-  const countMap = countBy(poolRows, fieldKey || fieldNameFor(stateKey));
-  const container = $(containerId);
-  container.innerHTML = '';
-  options.forEach(opt => {
-    const chip = document.createElement('div');
-    const active = state[stateKey].has(opt);
-    chip.className = 'chip' + (active ? ' active' : '');
-    chip.innerHTML = `${opt} <span class="n">${countMap[opt]||0}</span>`;
-    chip.addEventListener('click', () => toggleChip(stateKey, opt));
-    container.appendChild(chip);
+    // drop selections that are no longer valid given current pool
+    [...sel].forEach(v => { if(!countMap[v]) sel.delete(v); });
+
+    const dd = document.createElement('div');
+    dd.className = 'dropdown';
+    dd.id = 'dd-' + f.key;
+    const btnLabel = sel.size ? `${f.label} (${sel.size})` : f.label;
+    dd.innerHTML = `
+      <div class="dropdown-btn ${sel.size?'has-selection':''}">
+        <span>${btnLabel}</span><span class="arrow">▾</span>
+      </div>
+      <div class="dropdown-panel">
+        <div class="dropdown-panel-head">
+          <span class="mode-toggle" data-key="${f.key}">${state[f.key].multi ? '切换为单选' : '切换为多选'}</span>
+          <span class="clear-one" data-key="${f.key}">清空</span>
+        </div>
+        ${options.length ? options.map(opt => `
+          <label class="option-row">
+            <input type="${state[f.key].multi?'checkbox':'radio'}" name="${f.key}" ${sel.has(opt)?'checked':''} data-key="${f.key}" data-val="${escAttr(opt)}">
+            <span>${opt}</span><span class="cnt">${countMap[opt]}</span>
+          </label>`).join('') : '<div class="option-empty">当前上级筛选下暂无可选项</div>'}
+      </div>
+    `;
+    row.appendChild(dd);
+
+    dd.querySelector('.dropdown-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = dd.classList.contains('open');
+      document.querySelectorAll('.dropdown.open').forEach(d => d.classList.remove('open'));
+      if(!isOpen) dd.classList.add('open');
+    });
+
+    dd.querySelectorAll('input[type=checkbox], input[type=radio]').forEach(inp => {
+      inp.addEventListener('change', (e) => {
+        const key = e.target.dataset.key, val = e.target.dataset.val;
+        if(state[key].multi){
+          if(e.target.checked) state[key].selected.add(val); else state[key].selected.delete(val);
+        } else {
+          state[key].selected.clear();
+          if(e.target.checked) state[key].selected.add(val);
+        }
+        buildFilterRow();
+        applyFiltersAndRenderList();
+        // re-open the same dropdown after rebuild for continued multi-selection
+        const reopened = $('dd-' + key);
+        if(reopened) reopened.classList.add('open');
+      });
+    });
+
+    dd.querySelector('.mode-toggle').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const key = e.target.dataset.key;
+      state[key].multi = !state[key].multi;
+      if(!state[key].multi && state[key].selected.size > 1){
+        const first = [...state[key].selected][0];
+        state[key].selected.clear(); state[key].selected.add(first);
+      }
+      buildFilterRow();
+      applyFiltersAndRenderList();
+      $('dd-' + key).classList.add('open');
+    });
+
+    dd.querySelector('.clear-one').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const key = e.target.dataset.key;
+      state[key].selected.clear();
+      buildFilterRow();
+      applyFiltersAndRenderList();
+      $('dd-' + key).classList.add('open');
+    });
+
+    dd.querySelector('.dropdown-panel').addEventListener('click', (e) => e.stopPropagation());
   });
 }
 
-function toggleChip(stateKey, value){
-  const multi = stateKey==='division' ? state.divMulti : stateKey==='l1' ? state.l1Multi : stateKey==='l2' ? state.l2Multi : true;
-  const set = state[stateKey];
-  if(set.has(value)){
-    set.delete(value);
-  } else {
-    if(!multi) set.clear();
-    set.add(value);
-  }
-  // cascading reset: changing a parent level clears child-level selections that no longer apply
-  if(stateKey==='division'){ state.l0.clear(); state.l1.clear(); state.l2.clear(); }
-  if(stateKey==='l0'){ state.l1.clear(); state.l2.clear(); }
-  if(stateKey==='l1'){ state.l2.clear(); }
-  buildFilterChips();
-  applyFiltersAndRenderList();
-}
-
-['div','l1','l2'].forEach(prefix => {
-  $(prefix+'ModeToggle').addEventListener('click', () => {
-    const key = prefix==='div' ? 'divMulti' : prefix+'Multi';
-    state[key] = !state[key];
-    $(prefix+'ModeToggle').textContent = state[key] ? '切换为单选' : '切换为多选';
-    // enforce single selection if switching to single with multiple already selected
-    const stateKey = prefix==='div' ? 'division' : prefix;
-    if(!state[key] && state[stateKey].size > 1){
-      const first = [...state[stateKey]][0];
-      state[stateKey].clear(); state[stateKey].add(first);
-    }
-    buildFilterChips();
-    applyFiltersAndRenderList();
-  });
+document.addEventListener('click', () => {
+  document.querySelectorAll('.dropdown.open').forEach(d => d.classList.remove('open'));
 });
 
 $('clearFilters').addEventListener('click', () => {
-  state.division.clear(); state.l0.clear(); state.l1.clear(); state.l2.clear();
+  FILTER_DEFS.forEach(f => state[f.key].selected.clear());
   $('searchInput').value = '';
-  buildFilterChips();
+  buildFilterRow();
   applyFiltersAndRenderList();
 });
+
+/* ---------- Fuzzy search ---------- */
+function fuzzyMatch(text, query){
+  text = text.toLowerCase(); query = query.toLowerCase().replace(/\s+/g,'');
+  if(!query) return true;
+  if(text.includes(query)) return true; // direct substring first
+  // subsequence fuzzy match fallback
+  let ti = 0;
+  for(let qi=0; qi<query.length; qi++){
+    const ch = query[qi];
+    let found = false;
+    while(ti < text.length){
+      if(text[ti] === ch){ found = true; ti++; break; }
+      ti++;
+    }
+    if(!found) return false;
+  }
+  return true;
+}
 
 $('searchInput').addEventListener('input', applyFiltersAndRenderList);
 
 function applyFiltersAndRenderList(){
-  let rows = rowsAfter(['division','l0','l1','l2']);
-  const q = $('searchInput').value.trim().toLowerCase();
-  if(q) rows = rows.filter(r => Object.values(r).some(v => (v||'').toString().toLowerCase().includes(q)));
+  let rows = rowsAfter(null);
+  const q = $('searchInput').value.trim();
+  if(q) rows = rows.filter(r => fuzzyMatch(Object.values(r).join(' '), q));
 
   $('resultCount').textContent = `共 ${rows.length} 条结果`;
   const grid = $('dictGrid');
@@ -365,11 +386,9 @@ function applyFiltersAndRenderList(){
     const item = document.createElement('div');
     item.className = 'dict-item';
     item.innerHTML = `
-      <div class="dict-item-head">
-        <div>
-          <div class="dict-title">${r.channel_l3 || r.channel_l2 || r.channel_l1 || '未命名条目'}</div>
-          <div class="dict-path">${r.channel_l1} › ${r.channel_l2} › ${r.channel_l3}</div>
-        </div>
+      <div>
+        <div class="dict-title">${r.channel_l3 || r.channel_l2 || r.channel_l1 || '未命名条目'}</div>
+        <div class="dict-path">${r.channel_l1} › ${r.channel_l2} › ${r.channel_l3}</div>
       </div>
       <div class="badges">
         <span class="badge div">${r.division_name}</span>
@@ -396,6 +415,17 @@ function applyFiltersAndRenderList(){
     grid.appendChild(note);
   }
 }
+
+/* ---------- Functional nav links (smooth scroll) ---------- */
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.getElementById(a.dataset.target);
+    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+});
+
+function escAttr(s){ return String(s).replace(/"/g,'&quot;'); }
 
 init();
 </script>
