@@ -9,16 +9,30 @@
   :root{
     --gray-bg:#F5F5F7; --white:#FFFFFF; --black:#1D1D1F; --sub:#6E6E73;
     --blue:#0066CC; --border:rgba(0,0,0,0.08); --card-dark:#1D1D1F;
-    /* Muted / premium palette (low saturation, "Morandi" tones) */
     --m1:#3A4750; --m2:#6E8894; --m3:#8FA998; --m4:#C9A876; --m5:#A67F8E; --m6:#B7B29C; --m7:#7B8A9A; --m8:#9C8AA5;
   }
   *{box-sizing:border-box;}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Helvetica Neue",Arial,sans-serif;background:var(--gray-bg);color:var(--black);}
 
   .nav{background:rgba(255,255,255,0.8); backdrop-filter:blur(20px) saturate(180%); border-bottom:1px solid var(--border);
-    position:sticky; top:0; z-index:200; padding:0 40px; height:52px; display:flex; align-items:center; justify-content:space-between;}
+    position:sticky; top:0; z-index:200; padding:0 40px; height:56px; display:flex; align-items:center; justify-content:space-between;}
   .nav-left{display:flex; align-items:center; gap:28px;}
-  .nav-logo{font-weight:600; font-size:15px; letter-spacing:-0.2px;}
+
+  /* ---------- ONE L'ORÉAL Data logo (text/dot recreation, transparent bg) ---------- */
+  .oneloreal-logo{display:flex; align-items:center; gap:8px; line-height:1;}
+  .oneloreal-logo .top-row{display:flex; flex-direction:column;}
+  .oneloreal-logo .brand-line{font-size:9.5px; font-weight:800; letter-spacing:0.8px; color:var(--black); text-transform:uppercase;}
+  .oneloreal-logo .brand-line .accent{font-weight:800;}
+  .oneloreal-logo .data-row{display:flex; align-items:center; gap:3px; margin-top:1px;}
+  .dot-d{
+    display:grid; grid-template-columns:repeat(3, 3.5px); grid-template-rows:repeat(4, 3.5px); gap:1.6px;
+    margin-right:2px;
+  }
+  .dot-d span{width:3.5px; height:3.5px; border-radius:50%; background:var(--black); opacity:0.85;}
+  /* mask to form a D shape using visibility */
+  .dot-d span.off{opacity:0;}
+  .data-text{font-size:19px; font-weight:800; letter-spacing:-0.5px; color:var(--black);}
+
   .nav-links{display:flex; gap:24px; font-size:12.5px;}
   .nav-links a{color:var(--sub); text-decoration:none; cursor:pointer; transition:color .15s;}
   .nav-links a:hover{color:var(--black);}
@@ -53,7 +67,6 @@
   .card .desc{font-size:13px; color:var(--sub); margin-bottom:16px;}
   .chart-wrap{position:relative; height:260px;}
 
-  /* ---------- Dropdown filter ---------- */
   .filter-row{display:flex; flex-wrap:wrap; gap:12px; margin-bottom:18px;}
   .dropdown{position:relative;}
   .dropdown-btn{
@@ -86,7 +99,6 @@
   .result-summary{font-size:12.5px; color:var(--sub); margin-bottom:14px; display:flex; align-items:center; justify-content:space-between;}
   .clear-link{color:var(--blue); cursor:pointer; font-weight:500;}
 
-  /* ---------- Narrow compact cards, click to expand modal ---------- */
   .dict-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:12px;}
   .dict-item{
     background:var(--white); border:1px solid var(--border); border-radius:16px; padding:16px;
@@ -103,7 +115,6 @@
   .badge.freq{background:rgba(143,169,152,0.18); color:#5C7A64;}
   .empty-note{text-align:center; color:var(--sub); padding:24px; font-size:13px; grid-column:1/-1;}
 
-  /* ---------- Modal ---------- */
   .modal-overlay{
     display:none; position:fixed; inset:0; background:rgba(29,29,31,0.5); backdrop-filter:blur(6px);
     z-index:500; align-items:center; justify-content:center; padding:24px;
@@ -141,7 +152,20 @@
 
 <div class="nav">
   <div class="nav-left">
-    <div class="nav-logo">◆ Sellout Design</div>
+    <!-- ONE L'ORÉAL Data logo recreation (transparent background) -->
+    <div class="oneloreal-logo">
+      <div class="dot-d">
+        <span></span><span></span><span class="off"></span>
+        <span></span><span class="off"></span><span></span>
+        <span></span><span class="off"></span><span></span>
+        <span></span><span></span><span class="off"></span>
+      </div>
+      <div class="top-row">
+        <div class="brand-line">ONE L'ORÉAL</div>
+        <div class="data-row"><span class="data-text">Data</span></div>
+      </div>
+    </div>
+
     <div class="nav-links">
       <a data-target="overviewSection">数据总览</a>
       <a data-target="detailSection">渠道筛选</a>
@@ -200,7 +224,6 @@
   </div>
 </div>
 
-<!-- Modal -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-box" id="modalBox"></div>
 </div>
