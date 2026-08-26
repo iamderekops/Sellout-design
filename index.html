@@ -50,6 +50,7 @@
   .empty-state h2{color:var(--black); font-size:24px; margin-bottom:8px;}
   .diag{font-size:12px; color:var(--sub); margin-top:14px; background:#fff; border-radius:12px; padding:12px 16px; display:inline-block; border:1px solid var(--border);}
 
+  /* ---------- KPI cards: dynamic active(dark) state ---------- */
   .kpi-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:20px;}
   .kpi-card{
     background:var(--white); border-radius:22px; padding:26px; border:1px solid var(--border);
@@ -61,9 +62,9 @@
   .kpi-card:hover .label .hint{opacity:0.6;}
   .kpi-card .value{font-size:38px; font-weight:700; letter-spacing:-1px;}
   .kpi-card .sub{font-size:12.5px; color:var(--sub); margin-top:6px;}
-  .kpi-card.dark{background:var(--c-navy); color:#fff; border:none;}
-  .kpi-card.dark .label{color:rgba(255,255,255,0.65);}
-  .kpi-card.dark .sub{color:rgba(255,255,255,0.55);}
+  .kpi-card.active{background:var(--c-navy); color:#fff; border-color:transparent;}
+  .kpi-card.active .label{color:rgba(255,255,255,0.65);}
+  .kpi-card.active .sub{color:rgba(255,255,255,0.55);}
 
   .grid-2{display:grid; grid-template-columns:1.1fr 1fr; gap:16px; margin-bottom:16px;}
   .card{background:var(--white); border-radius:22px; padding:26px; border:1px solid var(--border); position:relative;}
@@ -196,22 +197,23 @@
   </div>
 
   <div id="dashboard" style="display:none;">
+    <!-- 卡片顺序：总记录数 → Division数量 → Online占比 → Channel L1数量，与下方筛选器顺序(Division/L0/L1/L2)保持一致 -->
     <div class="kpi-grid" id="overviewSection">
-      <div class="kpi-card dark" id="kpiCardTotal">
+      <div class="kpi-card" id="kpiCardTotal" data-kpi="total">
         <div class="label">总记录数 <span class="hint">点击重置筛选 ↻</span></div>
         <div class="value" id="kpiTotal">-</div><div class="sub">条数据字典条目</div>
       </div>
-      <div class="kpi-card" id="kpiCardDivision">
+      <div class="kpi-card" id="kpiCardDivision" data-kpi="division">
         <div class="label">Division 数量 <span class="hint">点击筛选 →</span></div>
         <div class="value" id="kpiDivision">-</div><div class="sub" id="kpiDivisionList">-</div>
       </div>
-      <div class="kpi-card" id="kpiCardL1">
-        <div class="label">Channel L1 数量 <span class="hint">点击筛选 →</span></div>
-        <div class="value" id="kpiL1">-</div><div class="sub">E-Boutique / Social / 其他</div>
-      </div>
-      <div class="kpi-card" id="kpiCardOnline">
+      <div class="kpi-card" id="kpiCardOnline" data-kpi="online">
         <div class="label">Online 占比 <span class="hint">点击查看Online →</span></div>
         <div class="value" id="kpiOnline">-</div><div class="sub" id="kpiOnlineSub">-</div>
+      </div>
+      <div class="kpi-card" id="kpiCardL1" data-kpi="l1">
+        <div class="label">Channel L1 数量 <span class="hint">点击筛选 →</span></div>
+        <div class="value" id="kpiL1">-</div><div class="sub">E-Boutique / Social / 其他</div>
       </div>
     </div>
 
@@ -255,7 +257,6 @@ const FILTER_DEFS = [
   { key:'l2', field:'channel_l2', label:'Channel L2' }
 ];
 
-// 统一多选，不再区分单选/多选模式
 const state = {};
 FILTER_DEFS.forEach(f => state[f.key] = { selected:new Set() });
 
@@ -313,6 +314,7 @@ function render(){
   buildFilterRow();
   applyFiltersAndRenderList();
   bindKpiCardActions();
+  setActiveKpiCard('total'); // 默认第一个（总记录数）为深色高亮
 }
 
 function rowsAfter(excludeKey){
@@ -476,28 +478,39 @@ function closeModal(){ $('modalOverlay').classList.remove('show'); }
 $('modalOverlay').addEventListener('click', (e) => { if(e.target.id === 'modalOverlay') closeModal(); });
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
 
+/* ---------- 点哪个卡片，哪个卡片深色高亮 ---------- */
+function setActiveKpiCard(kpiKey){
+  document.querySelectorAll('.kpi-card').forEach(c => c.classList.remove('active'));
+  const target = document.querySelector(`.kpi-card[data-kpi="${kpiKey}"]`);
+  if(target) target.classList.add('active');
+}
+
 function bindKpiCardActions(){
   $('kpiCardTotal').onclick = () => {
     FILTER_DEFS.forEach(f => state[f.key].selected.clear());
     $('searchInput').value = '';
     buildFilterRow();
     applyFiltersAndRenderList();
+    setActiveKpiCard('total');
     $('detailSection').scrollIntoView({behavior:'smooth', block:'start'});
   };
   $('kpiCardDivision').onclick = () => {
+    setActiveKpiCard('division');
     $('detailSection').scrollIntoView({behavior:'smooth', block:'start'});
     setTimeout(() => { document.querySelectorAll('.dropdown.open').forEach(d=>d.classList.remove('open')); $('dd-division').classList.add('open'); }, 350);
-  };
-  $('kpiCardL1').onclick = () => {
-    $('detailSection').scrollIntoView({behavior:'smooth', block:'start'});
-    setTimeout(() => { document.querySelectorAll('.dropdown.open').forEach(d=>d.classList.remove('open')); $('dd-l1').classList.add('open'); }, 350);
   };
   $('kpiCardOnline').onclick = () => {
     state.l0.selected.clear();
     state.l0.selected.add('Online');
     buildFilterRow();
     applyFiltersAndRenderList();
+    setActiveKpiCard('online');
     $('detailSection').scrollIntoView({behavior:'smooth', block:'start'});
+  };
+  $('kpiCardL1').onclick = () => {
+    setActiveKpiCard('l1');
+    $('detailSection').scrollIntoView({behavior:'smooth', block:'start'});
+    setTimeout(() => { document.querySelectorAll('.dropdown.open').forEach(d=>d.classList.remove('open')); $('dd-l1').classList.add('open'); }, 350);
   };
 }
 
