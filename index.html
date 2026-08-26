@@ -9,7 +9,8 @@
   :root{
     --gray-bg:#F5F5F7; --white:#FFFFFF; --black:#1D1D1F; --sub:#6E6E73;
     --blue:#0066CC; --border:rgba(0,0,0,0.08); --card-dark:#1D1D1F;
-    --m1:#3A4750; --m2:#6E8894; --m3:#8FA998; --m4:#C9A876; --m5:#A67F8E; --m6:#B7B29C; --m7:#7B8A9A; --m8:#9C8AA5;
+    --c-navy:#1B2A4A; --c-teal:#2E6F95; --c-emerald:#2F7D6B; --c-gold:#D98E3B;
+    --c-rose:#B5495B; --c-purple:#6B5B95; --c-slate:#5C6B7A; --c-sky:#4F8FC0;
   }
   *{box-sizing:border-box;}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Helvetica Neue",Arial,sans-serif;background:var(--gray-bg);color:var(--black);}
@@ -50,13 +51,19 @@
   .diag{font-size:12px; color:var(--sub); margin-top:14px; background:#fff; border-radius:12px; padding:12px 16px; display:inline-block; border:1px solid var(--border);}
 
   .kpi-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:20px;}
-  .kpi-card{background:var(--white); border-radius:22px; padding:26px; border:1px solid var(--border);}
-  .kpi-card .label{font-size:12.5px; color:var(--sub); font-weight:500; margin-bottom:10px;}
+  .kpi-card{
+    background:var(--white); border-radius:22px; padding:26px; border:1px solid var(--border);
+    cursor:pointer; transition:all .2s ease; position:relative;
+  }
+  .kpi-card:hover{transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,0,0,0.1); border-color:transparent;}
+  .kpi-card .label{font-size:12.5px; color:var(--sub); font-weight:500; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;}
+  .kpi-card .label .hint{font-size:11px; opacity:0; transition:opacity .2s;}
+  .kpi-card:hover .label .hint{opacity:0.6;}
   .kpi-card .value{font-size:38px; font-weight:700; letter-spacing:-1px;}
   .kpi-card .sub{font-size:12.5px; color:var(--sub); margin-top:6px;}
-  .kpi-card.dark{background:var(--card-dark); color:#fff; border:none;}
-  .kpi-card.dark .label{color:rgba(255,255,255,0.6);}
-  .kpi-card.dark .sub{color:rgba(255,255,255,0.5);}
+  .kpi-card.dark{background:var(--c-navy); color:#fff; border:none;}
+  .kpi-card.dark .label{color:rgba(255,255,255,0.65);}
+  .kpi-card.dark .sub{color:rgba(255,255,255,0.55);}
 
   .grid-2{display:grid; grid-template-columns:1.1fr 1fr; gap:16px; margin-bottom:16px;}
   .card{background:var(--white); border-radius:22px; padding:26px; border:1px solid var(--border); position:relative;}
@@ -72,7 +79,7 @@
     cursor:pointer; color:var(--black); min-width:150px; justify-content:space-between; transition:all .15s;
   }
   .dropdown-btn:hover{background:#EAEAEC;}
-  .dropdown-btn.has-selection{background:var(--m1); color:#fff;}
+  .dropdown-btn.has-selection{background:var(--c-navy); color:#fff;}
   .dropdown-btn .arrow{font-size:10px; opacity:.6; transition:transform .2s;}
   .dropdown.open .dropdown-btn .arrow{transform:rotate(180deg);}
   .dropdown-panel{
@@ -81,12 +88,11 @@
     padding:12px; min-width:260px; max-height:340px; overflow-y:auto;
   }
   .dropdown.open .dropdown-panel{display:block;}
-  .dropdown-panel-head{display:flex; align-items:center; justify-content:space-between; padding:2px 4px 10px; border-bottom:1px solid var(--border); margin-bottom:8px;}
-  .dropdown-panel-head .mode-toggle{font-size:11.5px; color:var(--blue); cursor:pointer; font-weight:500;}
+  .dropdown-panel-head{display:flex; align-items:center; justify-content:flex-end; padding:2px 4px 10px; border-bottom:1px solid var(--border); margin-bottom:8px;}
   .dropdown-panel-head .clear-one{font-size:11.5px; color:var(--sub); cursor:pointer;}
   .option-row{display:flex; align-items:center; gap:10px; padding:8px 6px; border-radius:8px; cursor:pointer; font-size:13.5px;}
   .option-row:hover{background:var(--gray-bg);}
-  .option-row input{accent-color:var(--m1); width:15px; height:15px;}
+  .option-row input{accent-color:var(--c-navy); width:15px; height:15px;}
   .option-row .cnt{margin-left:auto; font-size:11.5px; color:var(--sub);}
   .option-empty{font-size:12.5px; color:var(--sub); padding:12px 6px; text-align:center;}
 
@@ -105,11 +111,11 @@
   .dict-title{font-size:13.5px; font-weight:600; line-height:1.3;}
   .dict-path{font-size:11px; color:var(--sub); margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .badges{display:flex; gap:5px; flex-wrap:wrap; margin-top:10px;}
-  .badge{font-size:10.5px; padding:3px 9px; border-radius:980px; font-weight:500;}
-  .badge.online{background:rgba(110,136,148,0.15); color:var(--m2);}
-  .badge.offline{background:rgba(0,0,0,0.06); color:var(--sub);}
-  .badge.div{background:rgba(58,71,80,0.08); color:var(--m1);}
-  .badge.freq{background:rgba(143,169,152,0.18); color:#5C7A64;}
+  .badge{font-size:10.5px; padding:3px 9px; border-radius:980px; font-weight:600;}
+  .badge.online{background:rgba(46,111,149,0.16); color:var(--c-teal);}
+  .badge.offline{background:rgba(92,107,122,0.16); color:var(--c-slate);}
+  .badge.div{background:rgba(27,42,74,0.10); color:var(--c-navy);}
+  .badge.freq{background:rgba(47,125,107,0.16); color:var(--c-emerald);}
   .empty-note{text-align:center; color:var(--sub); padding:24px; font-size:13px; grid-column:1/-1;}
 
   .modal-overlay{
@@ -191,10 +197,22 @@
 
   <div id="dashboard" style="display:none;">
     <div class="kpi-grid" id="overviewSection">
-      <div class="kpi-card dark"><div class="label">总记录数</div><div class="value" id="kpiTotal">-</div><div class="sub">条数据字典条目</div></div>
-      <div class="kpi-card"><div class="label">Division 数量</div><div class="value" id="kpiDivision">-</div><div class="sub" id="kpiDivisionList">-</div></div>
-      <div class="kpi-card"><div class="label">Channel L1 数量</div><div class="value" id="kpiL1">-</div><div class="sub">E-Boutique / Social / 其他</div></div>
-      <div class="kpi-card"><div class="label">Online 占比</div><div class="value" id="kpiOnline">-</div><div class="sub" id="kpiOnlineSub">-</div></div>
+      <div class="kpi-card dark" id="kpiCardTotal">
+        <div class="label">总记录数 <span class="hint">点击重置筛选 ↻</span></div>
+        <div class="value" id="kpiTotal">-</div><div class="sub">条数据字典条目</div>
+      </div>
+      <div class="kpi-card" id="kpiCardDivision">
+        <div class="label">Division 数量 <span class="hint">点击筛选 →</span></div>
+        <div class="value" id="kpiDivision">-</div><div class="sub" id="kpiDivisionList">-</div>
+      </div>
+      <div class="kpi-card" id="kpiCardL1">
+        <div class="label">Channel L1 数量 <span class="hint">点击筛选 →</span></div>
+        <div class="value" id="kpiL1">-</div><div class="sub">E-Boutique / Social / 其他</div>
+      </div>
+      <div class="kpi-card" id="kpiCardOnline">
+        <div class="label">Online 占比 <span class="hint">点击查看Online →</span></div>
+        <div class="value" id="kpiOnline">-</div><div class="sub" id="kpiOnlineSub">-</div>
+      </div>
     </div>
 
     <div class="grid-2">
@@ -204,11 +222,11 @@
 
     <div class="card" id="detailSection">
       <h3>数据字典明细</h3>
-      <div class="desc">点击下方筛选器展开勾选，支持多选（可切换为单选）；各层级自动联动，只显示当前上级筛选下真实存在的选项；点击卡片查看完整详情</div>
+      <div class="desc">点击下方筛选器展开勾选，支持多选；各层级自动联动，只显示当前上级筛选下真实存在的选项；点击卡片查看完整详情</div>
 
       <div class="filter-row" id="filterRow"></div>
 
-      <input class="search-bar" id="searchInput" placeholder="🔍 搜索关键词（可与上方筛选器组合使用）...">
+      <input class="search-bar" id="searchInput" placeholder="🔍 搜索 Channel L1 / L2 / L3 关键词（可与上方筛选器组合使用）...">
 
       <div class="result-summary">
         <span id="resultCount">共 0 条结果</span>
@@ -228,7 +246,7 @@
 let rawRows = [];
 let charts = {};
 const $ = id => document.getElementById(id);
-const PALETTE = ['#3A4750','#6E8894','#8FA998','#C9A876','#A67F8E','#B7B29C','#7B8A9A','#9C8AA5'];
+const PALETTE = ['#1B2A4A','#2E6F95','#2F7D6B','#D98E3B','#B5495B','#6B5B95','#5C6B7A','#4F8FC0'];
 
 const FILTER_DEFS = [
   { key:'division', field:'division_name', label:'Division' },
@@ -237,8 +255,9 @@ const FILTER_DEFS = [
   { key:'l2', field:'channel_l2', label:'Channel L2' }
 ];
 
+// 统一多选，不再区分单选/多选模式
 const state = {};
-FILTER_DEFS.forEach(f => state[f.key] = { selected:new Set(), multi:true });
+FILTER_DEFS.forEach(f => state[f.key] = { selected:new Set() });
 
 async function init(){
   try{
@@ -288,11 +307,12 @@ function render(){
 
   destroyChart('online');
   charts.online = new Chart($('chartOnline'), { type:'bar',
-    data:{ labels:Object.keys(onlineCount), datasets:[{ data:Object.values(onlineCount), backgroundColor:['#3A4750','#6E8894'], borderRadius:10, maxBarThickness:60 }]},
+    data:{ labels:Object.keys(onlineCount), datasets:[{ data:Object.values(onlineCount), backgroundColor:['#1B2A4A','#D98E3B'], borderRadius:10, maxBarThickness:60 }]},
     options:{ plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, grid:{color:'#eee'}}, x:{grid:{display:false}}} } });
 
   buildFilterRow();
   applyFiltersAndRenderList();
+  bindKpiCardActions();
 }
 
 function rowsAfter(excludeKey){
@@ -325,12 +345,11 @@ function buildFilterRow(){
       </div>
       <div class="dropdown-panel">
         <div class="dropdown-panel-head">
-          <span class="mode-toggle" data-key="${f.key}">${state[f.key].multi ? '切换为单选' : '切换为多选'}</span>
           <span class="clear-one" data-key="${f.key}">清空</span>
         </div>
         ${options.length ? options.map(opt => `
           <label class="option-row">
-            <input type="${state[f.key].multi?'checkbox':'radio'}" name="${f.key}" ${sel.has(opt)?'checked':''} data-key="${f.key}" data-val="${escAttr(opt)}">
+            <input type="checkbox" name="${f.key}" ${sel.has(opt)?'checked':''} data-key="${f.key}" data-val="${escAttr(opt)}">
             <span>${opt}</span><span class="cnt">${countMap[opt]}</span>
           </label>`).join('') : '<div class="option-empty">当前上级筛选下暂无可选项</div>'}
       </div>
@@ -344,33 +363,15 @@ function buildFilterRow(){
       if(!isOpen) dd.classList.add('open');
     });
 
-    dd.querySelectorAll('input[type=checkbox], input[type=radio]').forEach(inp => {
+    dd.querySelectorAll('input[type=checkbox]').forEach(inp => {
       inp.addEventListener('change', (e) => {
         const key = e.target.dataset.key, val = e.target.dataset.val;
-        if(state[key].multi){
-          if(e.target.checked) state[key].selected.add(val); else state[key].selected.delete(val);
-        } else {
-          state[key].selected.clear();
-          if(e.target.checked) state[key].selected.add(val);
-        }
+        if(e.target.checked) state[key].selected.add(val); else state[key].selected.delete(val);
         buildFilterRow();
         applyFiltersAndRenderList();
         const reopened = $('dd-' + key);
         if(reopened) reopened.classList.add('open');
       });
-    });
-
-    dd.querySelector('.mode-toggle').addEventListener('click', (e) => {
-      e.stopPropagation();
-      const key = e.target.dataset.key;
-      state[key].multi = !state[key].multi;
-      if(!state[key].multi && state[key].selected.size > 1){
-        const first = [...state[key].selected][0];
-        state[key].selected.clear(); state[key].selected.add(first);
-      }
-      buildFilterRow();
-      applyFiltersAndRenderList();
-      $('dd-' + key).classList.add('open');
     });
 
     dd.querySelector('.clear-one').addEventListener('click', (e) => {
@@ -397,16 +398,11 @@ $('clearFilters').addEventListener('click', () => {
   applyFiltersAndRenderList();
 });
 
-/* ---------- 精确搜索：只在关键识别字段里匹配，避免长文本字段导致过度模糊 ---------- */
 function fuzzyMatch(row, query){
   query = query.toLowerCase().trim();
   if(!query) return true;
 
-  const searchableFields = [
-    row.division_name, row.division_code,
-    row.channel_l0, row.channel_l1, row.channel_l2, row.channel_l3,
-    row.source, row.frequency
-  ];
+  const searchableFields = [row.channel_l1, row.channel_l2, row.channel_l3];
   const text = searchableFields.join(' ').toLowerCase();
 
   const normalizedText = text.replace(/\s+/g,'');
@@ -479,6 +475,31 @@ function openModal(idx){
 function closeModal(){ $('modalOverlay').classList.remove('show'); }
 $('modalOverlay').addEventListener('click', (e) => { if(e.target.id === 'modalOverlay') closeModal(); });
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+
+function bindKpiCardActions(){
+  $('kpiCardTotal').onclick = () => {
+    FILTER_DEFS.forEach(f => state[f.key].selected.clear());
+    $('searchInput').value = '';
+    buildFilterRow();
+    applyFiltersAndRenderList();
+    $('detailSection').scrollIntoView({behavior:'smooth', block:'start'});
+  };
+  $('kpiCardDivision').onclick = () => {
+    $('detailSection').scrollIntoView({behavior:'smooth', block:'start'});
+    setTimeout(() => { document.querySelectorAll('.dropdown.open').forEach(d=>d.classList.remove('open')); $('dd-division').classList.add('open'); }, 350);
+  };
+  $('kpiCardL1').onclick = () => {
+    $('detailSection').scrollIntoView({behavior:'smooth', block:'start'});
+    setTimeout(() => { document.querySelectorAll('.dropdown.open').forEach(d=>d.classList.remove('open')); $('dd-l1').classList.add('open'); }, 350);
+  };
+  $('kpiCardOnline').onclick = () => {
+    state.l0.selected.clear();
+    state.l0.selected.add('Online');
+    buildFilterRow();
+    applyFiltersAndRenderList();
+    $('detailSection').scrollIntoView({behavior:'smooth', block:'start'});
+  };
+}
 
 document.querySelectorAll('.nav-links a').forEach(a => {
   a.addEventListener('click', (e) => {
