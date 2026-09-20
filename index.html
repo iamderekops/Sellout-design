@@ -15,11 +15,19 @@
   body{margin:0;font-family:-apple-system,"Segoe UI",Arial,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);}
   header{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
 
-  .header-top{
+  .header-row{
+    display:flex;
+    align-items:center;
+    gap:36px;
+    padding:14px 24px;
+    max-width:1200px;
+    margin:0 auto;
+  }
+  .brand-block{
     display:flex;
     align-items:center;
     gap:10px;
-    padding:16px 24px 0;
+    flex-shrink:0;
   }
   .logo-dots{
     width:22px;
@@ -36,10 +44,25 @@
   .brand-sub{font-size:11px;letter-spacing:1px;color:var(--muted);font-weight:600;}
   .brand-main{font-size:20px;font-weight:800;}
 
-  .nav-links{display:flex;gap:28px;padding:10px 24px 0;margin-top:6px;}
-  .nav-links a{text-decoration:none;color:var(--muted);font-size:14px;font-weight:600;padding-bottom:12px;border-bottom:2px solid transparent;cursor:pointer;}
+  .nav-links{
+    display:flex;
+    gap:28px;
+    align-items:center;
+    height:100%;
+  }
+  .nav-links a{
+    text-decoration:none;
+    color:var(--muted);
+    font-size:14px;
+    font-weight:600;
+    padding:8px 0;
+    border-bottom:2px solid transparent;
+    cursor:pointer;
+    white-space:nowrap;
+  }
   .nav-links a.active{color:var(--navy);border-bottom-color:var(--navy);}
   .nav-links a:hover{color:var(--navy);}
+
   main{max-width:1200px;margin:0 auto;padding:24px;}
   .tab-panel{display:none;}
   .tab-panel.active{display:block;}
@@ -162,24 +185,26 @@
 <body>
 
 <header>
-  <div class="header-top">
-    <svg class="logo-dots" viewBox="0 0 20 20">
-      <circle cx="3" cy="3" r="2" fill="#1B2A4A"/>
-      <circle cx="10" cy="3" r="2" fill="#1B2A4A"/>
-      <circle cx="17" cy="3" r="2" fill="#1B2A4A"/>
-      <circle cx="3" cy="10" r="2" fill="#1B2A4A"/>
-      <circle cx="10" cy="10" r="2" fill="#1B2A4A"/>
-      <circle cx="3" cy="17" r="2" fill="#1B2A4A"/>
-    </svg>
-    <div class="brand-text">
-      <div class="brand-sub">ONE L'ORÉAL</div>
-      <div class="brand-main">Data</div>
+  <div class="header-row">
+    <div class="brand-block">
+      <svg class="logo-dots" viewBox="0 0 20 20">
+        <circle cx="3" cy="3" r="2" fill="#1B2A4A"/>
+        <circle cx="10" cy="3" r="2" fill="#1B2A4A"/>
+        <circle cx="17" cy="3" r="2" fill="#1B2A4A"/>
+        <circle cx="3" cy="10" r="2" fill="#1B2A4A"/>
+        <circle cx="10" cy="10" r="2" fill="#1B2A4A"/>
+        <circle cx="3" cy="17" r="2" fill="#1B2A4A"/>
+      </svg>
+      <div class="brand-text">
+        <div class="brand-sub">ONE L'ORÉAL</div>
+        <div class="brand-main">Data</div>
+      </div>
     </div>
-  </div>
-  <div class="nav-links" id="tabNav">
-    <a data-tab="tab1" class="active">数据总览</a>
-    <a data-tab="tab2">专题页</a>
-    <a data-tab="tab3">Sellout 大宽表设计</a>
+    <div class="nav-links" id="tabNav">
+      <a data-tab="tab1" class="active">数据总览</a>
+      <a data-tab="tab2">专题页</a>
+      <a data-tab="tab3">Sellout 大宽表设计</a>
+    </div>
   </div>
 </header>
 
@@ -279,7 +304,7 @@
 <section id="tab3" class="tab-panel">
   <div class="status-bar">
     <span class="status-dot" id="joinsStatusDot"></span>
-    <span id="joinsStatusText">正在加载关系设计数据...</span>
+    <span id="joinsStatusText">尚未加载（切换到此页签后自动加载）</span>
   </div>
   <div id="joinsEmptyState" style="display:none;color:#a33;font-size:13px;margin-bottom:16px;"></div>
 
@@ -310,8 +335,10 @@
 
 <script>
 /* ============================================================
-   全局：Tab 切换
+   全局：Tab 切换 —— Tab3 首次激活时才触发ER图渲染
    ============================================================ */
+let joinsLoaded = false;
+
 document.querySelectorAll('#tabNav a').forEach(a=>{
   a.addEventListener('click',(e)=>{
     e.preventDefault();
@@ -320,6 +347,11 @@ document.querySelectorAll('#tabNav a').forEach(a=>{
     a.classList.add('active');
     document.getElementById(a.dataset.tab).classList.add('active');
     window.scrollTo({top:0,behavior:'smooth'});
+
+    if(a.dataset.tab === 'tab3' && !joinsLoaded){
+      joinsLoaded = true;
+      initJoins();
+    }
   });
 });
 
@@ -755,15 +787,18 @@ $('topicModalOverlay').addEventListener('click',(e)=>{ if(e.target.id==='topicMo
 initTopics();
 
 /* ============================================================
-   TAB 3：Sellout 大宽表设计
+   TAB 3：Sellout 大宽表设计 —— 延迟到 Tab3 被激活后才加载/渲染
    ============================================================ */
 mermaid.initialize({ startOnLoad:false, theme:'neutral' });
+
+let joinsPayloadCache = null;
 
 async function initJoins(){
   try{
     const res = await fetch('./joins.json', {cache:'no-store'});
     if(!res.ok) throw new Error('HTTP ' + res.status);
     const payload = await res.json();
+    joinsPayloadCache = payload;
     $('joinsStatusDot').classList.add('on');
     $('joinsStatusText').textContent = '关系设计数据已加载 · ' + (payload.generatedAt || '');
     $('joinsEmptyState').style.display='none';
@@ -802,10 +837,11 @@ function buildMermaidSource(payload){
 async function renderJoins(payload){
   const mermaidSrc = buildMermaidSource(payload);
   const container = $('erDiagramContainer');
-  container.innerHTML = `<pre class="mermaid" id="erMermaidPre">${mermaidSrc}</pre>`;
 
   try{
-    await mermaid.run({ nodes: [document.getElementById('erMermaidPre')] });
+    const renderId = 'erGraph_' + Date.now();
+    const { svg } = await mermaid.render(renderId, mermaidSrc);
+    container.innerHTML = svg;
   }catch(err){
     container.innerHTML = `
       <div class="empty-note" style="color:#a33;text-align:left;">
@@ -830,8 +866,6 @@ async function renderJoins(payload){
     </div>
   `).join('');
 }
-
-initJoins();
 </script>
 </body>
 </html>
