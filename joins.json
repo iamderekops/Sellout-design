@@ -13,36 +13,12 @@
     ]
   },
   "dimension_tables": [
-    {
-      "name": "dim_sales_type",
-      "key_field": "onedata_partition_source + sales_type + sales_type_level2",
-      "fields": ["onedata_partition_source", "sales_type", "sales_type_level2", "description"]
-    },
-    {
-      "name": "dim_coupon_rule",
-      "key_field": "platform + rule_code",
-      "fields": ["platform", "rule_code", "field_name", "detail_item_type", "allocation_formula"]
-    },
-    {
-      "name": "dim_source_attribution_tmall",
-      "key_field": "source_lv3",
-      "fields": ["source_lv1", "source_lv2", "source_lv3", "source_flag", "priority", "data_source", "wait_period_days", "method"]
-    },
-    {
-      "name": "dim_source_attribution_dy",
-      "key_field": "c_biz + content_type",
-      "fields": ["c_biz", "source_lv1", "order_source_content_type", "source_lv2_result", "special_scenario_note"]
-    },
-    {
-      "name": "dim_material",
-      "key_field": "material_code",
-      "fields": ["material_code", "platform_sku_name", "brand", "yfg_flag"]
-    },
-    {
-      "name": "dim_channel",
-      "key_field": "channel_l3",
-      "fields": ["division_name", "channel_l0", "channel_l1", "channel_l2", "channel_l3"]
-    }
+    { "name": "dim_sales_type", "key_field": "onedata_partition_source + sales_type + sales_type_level2", "fields": ["onedata_partition_source", "sales_type", "sales_type_level2", "description"] },
+    { "name": "dim_coupon_rule", "key_field": "platform + rule_code", "fields": ["platform", "rule_code", "field_name", "detail_item_type", "allocation_formula"] },
+    { "name": "dim_source_attribution_tmall", "key_field": "source_lv3", "fields": ["source_lv1", "source_lv2", "source_lv3", "source_flag", "priority", "data_source", "wait_period_days", "method"] },
+    { "name": "dim_source_attribution_dy", "key_field": "c_biz + content_type", "fields": ["c_biz", "source_lv1", "order_source_content_type", "source_lv2_result", "special_scenario_note"] },
+    { "name": "dim_material", "key_field": "material_code", "fields": ["material_code", "platform_sku_name", "brand", "yfg_flag"] },
+    { "name": "dim_channel", "key_field": "channel_l3", "fields": ["division_name", "channel_l0", "channel_l1", "channel_l2", "channel_l3"] }
   ],
   "relationships": [
     { "fact_field": "onedata_partition_source", "dim_table": "dim_sales_type", "dim_key": "onedata_partition_source" },
