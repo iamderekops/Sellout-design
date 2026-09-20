@@ -1,0 +1,48 @@
+
+{
+  "generatedAt": "2026-09-20",
+  "fact_table": {
+    "name": "FACT_SELLOUT",
+    "fields": [
+      "order_number", "material_code", "sellout_quantity", "platform_sku_name",
+      "sellout_actual_value", "sellout_retail_value", "onedata_partition",
+      "onedata_partition_source", "sales_organization_code", "data_source",
+      "channelType", "sales_type", "sales_type_level2", "pt_partition_date"
+    ]
+  },
+  "dimension_tables": [
+    {
+      "name": "DIM_MATERIAL",
+      "key_field": "material_code",
+      "fields": [
+        "material_code", "material_name_zh", "material_name_en",
+        "material_type_code", "material_group_code", "brand_code",
+        "brand_name_en", "sub_brand_code", "axis_code", "axis_name_en",
+        "metier_code", "material_category_zh", "material_franchise_zh",
+        "material_volume_zh"
+      ]
+    },
+    {
+      "name": "DIM_ORGANIZATION",
+      "key_field": "sales_organization_code",
+      "fields": [
+        "sales_organization_code", "sales_organization_name_zh",
+        "division_code", "division_name_en", "signature_code", "signature_name_en"
+      ]
+    },
+    {
+      "name": "DIM_SOURCE",
+      "key_field": "data_source",
+      "fields": [
+        "data_source", "channelType", "onedata_partition_source",
+        "sales_type", "sales_type_level2"
+      ]
+    }
+  ],
+  "relationships": [
+    { "fact_field": "material_code", "dim_table": "DIM_MATERIAL", "dim_key": "material_code" },
+    { "fact_field": "sales_organization_code", "dim_table": "DIM_ORGANIZATION", "dim_key": "sales_organization_code" },
+    { "fact_field": "data_source", "dim_table": "DIM_SOURCE", "dim_key": "data_source" },
+    { "fact_field": "channelType", "dim_table": "DIM_SOURCE", "dim_key": "channelType" }
+  ]
+}

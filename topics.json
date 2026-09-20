@@ -1,0 +1,117 @@
+
+{
+  "generatedAt": "2026-09-20",
+  "topics": [
+    {
+      "id": "sales_type_full",
+      "title": "Sales Type 全量拆分逻辑",
+      "category": "销售类型 Sales Type",
+      "source_sheet": "Sales Type-全量",
+      "summary": "按 onedata_partition_source（数据源）拆分 sales_type / sales_type_level2 的完整取值与判定说明，覆盖 DIS、DOUYIN_CLOCK、JD_CLOCK、JDSZ、MARS、MARS_CLOCK、OMS、POS、SAP、SHELF_WTS、TMALL_CLOCK、TMALL_SUPER、VIP、VIP_BUYCOOR、WEMALL_CLOCK 等全部数据源。",
+      "detail_fields": [
+        { "label": "适用范围", "value": "Remark：start from Y2025.01" },
+        { "label": "DOUYIN_CLOCK - sales_type", "value": "-2（默认）/ 全款预售 / 定金预售" },
+        { "label": "DOUYIN_CLOCK - sales_type_level2", "value": "-2 / coupon_kol（达人券）/ coupon_platfrom（平台券中平台出资部分）/ coupon_pilotprogram（平台券-领航计划，成本由欧莱雅承担）" },
+        { "label": "DOUYIN_CLOCK - 说明", "value": "以上 coupon_kol / coupon_platfrom / coupon_pilotprogram 分别在“普通订单”“全款预售订单”“定金预售订单”三种 sales_type 下均可出现" },
+        { "label": "JD_CLOCK / JDSZ - sales_type", "value": "-2（默认）/ Coupon（说明：平台券）" },
+        { "label": "MARS - sales_type", "value": "E-Retailer / E-Shop / Group Sales" },
+        { "label": "MARS - E-Retailer 判定逻辑", "value": "Signaturecode=42；Before 20240401：BA Name begins with “分摊业绩”/“搭台直播”/“线上直播”；After 20240401：BA Name begins with “常规线上”；其他品牌：BA Name begins with “线上”" },
+        { "label": "MARS - E-Shop 判定逻辑", "value": "Dummy Name begins with “微信”" },
+        { "label": "MARS - Group Sales 判定逻辑", "value": "BA Name begins with “团购”" },
+        { "label": "MARS_CLOCK - sales_type", "value": "E-Retailer（判定逻辑同 MARS）/ Group Sales（判定逻辑同 MARS）" },
+        { "label": "OMS - sales_type", "value": "Cloud Mall-Group Sales / Cloud Mall-Retail / Coupon（平台券+达人券）" },
+        { "label": "POS - sales_type", "value": "E-Retailer / E-Retailer -KOL / E-Shop / Group Sales / Instant Delivery" },
+        { "label": "POS - E-Retailer 判定逻辑", "value": "Come_from begins with “线上”" },
+        { "label": "POS - E-Retailer -KOL 判定逻辑", "value": "After 202503，Come_from = E-Retailer-KOL" },
+        { "label": "POS - E-Shop 判定逻辑", "value": "Come_from begins with “微信” 或 Come_from contains “轰趴&达播”" },
+        { "label": "POS - Group Sales 判定逻辑", "value": "POS机勾选“是否团购”" },
+        { "label": "POS - Instant Delivery - sales_type_level2", "value": "淘闪-原饿了么 / 淘闪-天猫官旗" },
+        { "label": "SAP - sales_type", "value": "-2（默认）/ Direct（说明：直供GO Direct）" },
+        { "label": "TMALL_CLOCK - sales_type", "value": "Compensation（仅退款）/ Is From Presale（预售）/ Is From Presale_Compensation（预售仅退款）/ O+O" },
+        { "label": "TMALL_CLOCK - O+O 判定逻辑", "value": "After 202402：Brand Code='42' 且 sellout_channel='TMALLFSS' 且 Seller_Memo（JSON格式字符串）中 saletype=\"medical\"" },
+        { "label": "VIP_BUYCOOR - sales_type", "value": "-2（默认）/ 唯代购 / 特卖会主站" },
+        { "label": "其他无独立 sales_type 拆分的数据源", "value": "ECOTHERS_OFFLINE_SKU、ECOTHERS_ONLINE_SKU、SHELF_WTS、SHELF_WTS_ILOAD、TMALL_SUPER、VIP、WEMALL_CLOCK：均只有 -2（Not Applicable）" }
+      ]
+    },
+    {
+      "id": "dy_coupon",
+      "title": "抖音（DY）Coupon 归属逻辑",
+      "category": "优惠券 Coupon",
+      "source_sheet": "DY  Coupon",
+      "summary": "基于 actual_receive_amount_details 字段类型，拆分正单（Normal Sales）与退单（Sales Return）场景下各类优惠券/费用的归属明细项。",
+      "detail_fields": [
+        { "label": "Normal Sales - actual_receive_amount_details type2", "value": "对应明细项类型：平台承担优惠金额" },
+        { "label": "Normal Sales - actual_receive_amount_details type3", "value": "对应明细项类型：达人承担优惠金额" },
+        { "label": "Normal Sales - post_amount *-1", "value": "对应明细项类型：邮费" },
+        { "label": "Normal Sales - share_coupon_cost_platform *-1 (business_tag:LeadExtra)", "value": "对应明细项类型：领航计划" },
+        { "label": "Sales Return - refundTotalPaidAmount", "value": "对应明细项类型：实退金额" },
+        { "label": "Sales Return - refundPlatformDiscountReturnAmount", "value": "对应明细项类型：平台优惠退回金额" },
+        { "label": "Sales Return - refundKolDiscountReturnAmount", "value": "对应明细项类型：达人优惠退回金额" },
+        { "label": "Sales Return - post_amount *-1", "value": "对应明细项类型：邮费" },
+        { "label": "Sales Return - 关联正单获取 share_coupon_cost_platform（按单号和产品）", "value": "对应明细项类型：领航计划" }
+      ]
+    },
+    {
+      "id": "jd_coupon",
+      "title": "京东（JD）订单/Coupon 字段口径",
+      "category": "优惠券 Coupon",
+      "source_sheet": "JD Coupon",
+      "summary": "该 Sheet 为京东侧订单明细全字段清单（约230+列），涵盖 order_number、material_code、sellout_quantity、Page Value、Promotion、sellout_actual_value 及组织/物料/渠道维度字段，供后续与 Sellout 事实表比对映射。",
+      "detail_fields": [
+        { "label": "示例记录 - order_number", "value": "311758758171" },
+        { "label": "示例记录 - material_code", "value": "TCN26201 / F8371100 / LE810600 / TCN26203 等" },
+        { "label": "示例记录 - platform_sku_name", "value": "兰蔻（LANCOME）小白管防晒霜轻透水漾防晒乳SPF50 PA++++10ml【原价勿拍】* 等" },
+        { "label": "示例记录 - sellout_quantity / Page Value / Promotion / sellout_actual_value", "value": "1 / 475.19763444000466 / 54.7476344400047 / 420.45（示例数值，具体口径需按你建模文档核对）" },
+        { "label": "关联字段", "value": "该 Sheet 后续字段包含 payment_type、terminal_code、shipment_province/city/district、platform_goods_id、sellout_retail_value、transaction_type、division_code、division_name_en、signature_code、brand_code、material_type_code 等，与 Sellout 事实表/维度表高度重合，建议作为字段核对底稿" },
+        { "label": "备注", "value": "该 Sheet 数据稀疏度高（多列 null% > 95%），建议先与你的建模文档确认哪些字段为当前生效口径" }
+      ]
+    },
+    {
+      "id": "tmall_sources",
+      "title": "天猫 5 大来源拆分（Sources / KOL归属）",
+      "category": "来源归属 Source Attribution",
+      "source_sheet": "TMALL 5 Sources",
+      "summary": "Tmall 5 source NSO landscape：按 Source Lv1/Lv2/Lv3 与归属优先级，定义 KOL-direct、KOL-linkage、Captain、Store live、Others 等来源的判定条件与数据源。",
+      "detail_fields": [
+        { "label": "No.2 KOL-linkage-类目定向", "value": "source_flag: kol_linkage_cep；优先级4；数据源【热浪引擎-直播推广计划】+【热浪引擎-订单明细】；统计方法：筛选【热浪引擎-直播推广计划】中 合作主播=\"李佳琦Austin\" 且 合作状态=[\"新增计划主播已确认\",\"修改计划主播已确认\"]，保留计划id/合作主播/商品id/计划开始结束时间/佣金率，与【热浪引擎-订单明细】按 商品ID、达人昵称、订单创建时间在计划时间区间内、预估佣金/计佣金额=佣金率（保留2位小数比对）四条件匹配后登记为 KOL-direct" },
+        { "label": "No.3 KOL-linkage-定向", "value": "source_flag: kol_linkage_ep；优先级7；数据源【淘宝联盟-订单明细】；统计方法：计划名称 不属于 [通用计划,营销计划,如意投计划,自选计划,淘花计划]，且 来源或淘客昵称 属于 [zhangjiaqi1234567890, 超级权益推广(zhangjiaqi1234567890), 淘宝内容营销(zhangjiaqi1234567890), 美one时尚电商, 李佳琦Austin]" },
+        { "label": "No.4 other KOL-direct", "value": "优先级5；数据源【热浪引擎-直播推广计划】+【热浪引擎-订单明细】；统计方法：同 No.2 逻辑，但 合作主播<>\"李佳琦Austin\"" },
+        { "label": "No.5 other KOL-linkage-类目定向", "value": "优先级6；数据源【热浪引擎-直播推广计划】+【热浪引擎-订单明细】；统计方法：筛选【热浪引擎-订单明细】中 达人昵称<>\"李佳琦Austin\"，排除已归入 other KOL-direct 后剩余的子订单" },
+        { "label": "No.6 other KOL-linkage-定向（即抖音挂链）", "value": "优先级8；数据源【淘宝联盟-订单明细】；统计方法：计划名称不属于5种通用计划，且 来源或淘客昵称 不属于李佳琦相关昵称集合" },
+        { "label": "No.7 Captain-KOL", "value": "优先级1（最高）；数据源【淘宝联盟-订单明细】；统计方法：团长名称 in [翰风盛世联盟,所有女生,成新团,龙辉联盟,玺樾联盟]，服务费金额>0，计划名称=\"营销计划\"" },
+        { "label": "No.8 Captain-non KOL", "value": "优先级2；数据源【淘宝联盟-订单明细】；统计方法：团长名称 not in 上述团长集合，服务费金额>0，计划名称=\"营销计划\"" },
+        { "label": "No.9 Store live", "value": "优先级9；数据源【淘宝直播-订单明细】；统计方法：商品一级类目<>\"购物金\"（剔除购物金销售）；数据等候期：15天，但实际上平台能相隔1天产出正单订单；退款处理：正单金额按支付时间结算，退单金额按退款成功时间结算" },
+        { "label": "No.10 Others", "value": "优先级10（最低）；无自有数据源，没有打上 source 标记的订单即归属于 Others；数据等候期按 sources 中最长等候期计算" },
+        { "label": "通用规则 - 数据源订单明细逻辑", "value": "已结算订单，即已剔除仅退款和退货退款后的、父订单状态为\"交易成功\"的订单。平台提供的订单只有剔除完交易成功前仅退款和退货记录，没有原始完整正单/退单记录。若交易成功/结算后再发生退款，平台仍保留该订单记录，不删除，但金额相应扣减" },
+        { "label": "通用规则 - 数据等候期", "value": "15天" },
+        { "label": "Q&A - 能否用【热浪引擎-直播推广计划】替代 kepler 直播计划或仅用佣金率划线区分", "value": "可以使用【热浪引擎-直播推广计划】的主播名称/商品ID/佣金率/计划时间四个条件标记KOL direct订单，计划时间应与【热浪引擎-订单明细】的订单创建时间匹配" },
+        { "label": "Q&A - 是否需按推广状态（推广中/推广结束）剔除计划", "value": "不需控制计划的推广状态。逻辑上超过推广结束日期后计划自然失效不再计佣，但订单可能远晚于计划结束日期才结算，所以判断归属时不应控制推广状态" },
+        { "label": "Q&A - 如何处理热浪自动剔除交易成功后继续退货订单带来的订单数变化", "value": "热浪引擎只会在原记录上修改订单状态/计佣金额/订单退款金额/预估佣金信息，不会删除整条记录，不影响KOL归属判定，可忽略此数据变化" },
+        { "label": "Q&A - 一笔订单被多个来源登记时如何归类", "value": "设立 source 归类优先级，同时符合多个 source 时按优先级高低分配归类，确保订单仅有一个归属 source" },
+        { "label": "Q&A - 15天等候期与实际结算滞后的矛盾如何处理", "value": "依然维持15天等候期，每天可看到前15天的NSO结果；该天NSO数字会在特定“限期”内持续更新，到特定时刻停止并冻结，以体现结算滞后订单的正单业绩" }
+      ]
+    },
+    {
+      "id": "dy_sources",
+      "title": "抖音 4 大来源拆分（Sources：KOL / STORE）",
+      "category": "来源归属 Source Attribution",
+      "source_sheet": "DY 4 Sources",
+      "summary": "按 c_biz（=2 精选联盟 / <>2 小店自卖）区分 KOL 与 STORE 两大主体，再按流量体裁（直播/短视频/商品卡/其他）细分子来源。",
+      "detail_fields": [
+        { "label": "c_biz=2（精选联盟）- KOL Video", "value": "compass_source_content_type_video；识别 author id<>0，打标 KOL Video，否则 KOL Others" },
+        { "label": "c_biz=2（精选联盟）- KOL Product Card", "value": "compass_source_content_type_product_card" },
+        { "label": "c_biz=2（精选联盟）- KOL Others（按体裁）", "value": "compass_source_content_type_other" },
+        { "label": "c_biz=2（精选联盟）- 旧逻辑打标（null/未更新/空值订单）", "value": "KOL Video: c_biz=2 且 (videoid<>null AND videoid<>'')；KOL Live: c_biz=2 且 (roomid<>null AND roomid<>'' AND room_id<>0)；KOL Others: c_biz=2 剩下所有订单" },
+        { "label": "特殊场景 - 直播间溢出", "value": "通过达人直播间进入达人橱窗购买非挂车商品（直播间溢出）(author id=0)，归属到 KOL Others" },
+        { "label": "特殊场景 - 短视频溢出", "value": "通过达人短视频进入达人橱窗购买非挂车商品（短视频溢出）(author id=0)，归属到 KOL Others" },
+        { "label": "c_biz<>2（小店自卖）- Store Live", "value": "compass_source_content_type_live；识别 author id 为欧莱雅品牌账号，打标 Store Live，否则 Store Others" },
+        { "label": "c_biz<>2（小店自卖）- Store Video", "value": "compass_source_content_type_video；识别 author id 为欧莱雅品牌账号，打标 Store Video，否则 Store Others" },
+        { "label": "c_biz<>2（小店自卖）- Store Product Card", "value": "compass_source_content_type_product_card" },
+        { "label": "c_biz<>2（小店自卖）- Store Others（按体裁）", "value": "compass_source_content_type_other" },
+        { "label": "c_biz<>2（小店自卖）- 旧逻辑打标（null/未更新/空值订单）", "value": "Store Video: c_biz<>2 且 (videoid<>null AND videoid<>'')；Store Live: c_biz<>2 且 (roomid<>null AND roomid<>'' AND room_id<>0)；Store Others: c_biz<>2 剩下所有订单" },
+        { "label": "特殊场景 - 归属 Store Others 的场景（一）", "value": "a. 通过达人直播间加购，14日后付款，归属在自店售卖（author id=达人ID）；b. 通过达人直播间进入店铺下单非挂车商品（author id=达人ID）；c. 通过自店直播间进入店铺购买非挂车商品（直播间溢出）(author id=0)" },
+        { "label": "特殊场景 - 归属 Store Others 的场景（二）", "value": "a. 通过达人直播间进入店铺下单非挂车商品（author id=达人ID）；b. 通过自店短视频进入店铺购买非挂车商品（短视频溢出）(author id=0)" }
+      ]
+    }
+  ]
+}
