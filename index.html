@@ -123,7 +123,12 @@
   .modal-overlay{position:fixed;inset:0;background:rgba(10,14,25,.45);display:none;align-items:center;justify-content:center;z-index:100;}
   .modal-overlay.show{display:flex;}
   .modal-box{background:#fff;border-radius:16px;padding:26px;max-width:640px;width:92%;max-height:82vh;overflow:auto;position:relative;}
-  #topicModalBox.modal-box{max-width:760px;}
+  /* === 变更点 1：专题详情弹窗改为占页面宽度 80% === */
+  #topicModalBox.modal-box{
+    max-width:80vw;
+    width:80vw;
+    max-height:85vh;
+  }
   .modal-close{position:absolute;top:14px;right:16px;border:none;background:#f2f4f8;border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:14px;}
   .modal-title{font-size:18px;font-weight:800;margin-bottom:4px;padding-right:30px;}
   .modal-path{
@@ -166,7 +171,7 @@
 
   .join-table{width:100%;border-collapse:collapse;font-size:13px;}
   .join-table th,.join-table td{border:1px solid var(--border);padding:8px 10px;text-align:left;}
-  .join-table th{background:#f2f4f8;}
+  .join-table th{background:#f2f4f8;position:sticky;top:0;}
 
   #backToTopBtn{position:fixed;right:24px;bottom:24px;width:42px;height:42px;border-radius:50%;background:var(--navy);color:#fff;border:none;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:16px;}
   #backToTopBtn.show{display:flex;}
@@ -761,12 +766,28 @@ function applyTopicFiltersAndRender(){
   });
 }
 
+/* === 变更点 2：新增表格渲染逻辑，支持 detail_fields 中 type==='table' 的结构化字段 === */
+function renderDetailValue(f){
+  if(f.type === 'table' && Array.isArray(f.columns) && Array.isArray(f.rows)){
+    const thead = '<tr>' + f.columns.map(c => `<th>${c}</th>`).join('') + '</tr>';
+    const tbody = f.rows.map(r => '<tr>' + r.map(cell => `<td>${cell ?? ''}</td>`).join('') + '</tr>').join('');
+    return `
+      <div style="overflow:auto;max-height:420px;border:1px solid var(--border);border-radius:8px;">
+        <table class="join-table" style="margin:0;">
+          <thead>${thead}</thead>
+          <tbody>${tbody}</tbody>
+        </table>
+      </div>`;
+  }
+  return `<div class="v">${(f.value||'').toString()}</div>`;
+}
+
 function openTopicModal(idx){
   const t = currentTopics[idx];
   const rowsHtml = (t.detail_fields||[]).map(f => `
     <div class="modal-detail-row">
       <div class="k">${f.label}</div>
-      <div class="v">${f.value}</div>
+      ${renderDetailValue(f)}
     </div>
   `).join('');
   $('topicModalBox').innerHTML = `
