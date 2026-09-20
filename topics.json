@@ -1,6 +1,5 @@
-
 {
-  "generatedAt": "2026-09-20T08:12:21",
+  "generatedAt": "2026-09-20T08:42:49",
   "topics": [
     {
       "title": "全渠道 Sales Type 分类字典（Sales Type-全量）",
@@ -10,14 +9,49 @@
       "detail_fields": [
         { "label": "数据起始时间", "value": "Remark：start from Y2025.01" },
         { "label": "覆盖数据源数量", "value": "20个：DIS, DIS_ALLOCATE_CPD, DIS_ALLOCATE_PPD, DOUYIN_CLOCK, ECOTHERS_OFFLINE_SKU, ECOTHERS_ONLINE_SKU, JD_CLOCK, JDSZ, MARS, MARS_CLOCK, OMS, POS, SAP, SHELF_WTS, SHELF_WTS_ILOAD, TMALL_CLOCK, TMALL_SUPER, VIP, VIP_BUYCOOR, WEMALL_CLOCK" },
-        { "label": "抖音（DOUYIN_CLOCK）逻辑", "value": "按订单类型区分：全款预售 / 定金预售 / 普通订单(-2)；每种订单类型下再区分优惠券来源：coupon_kol(达人券)、coupon_platfrom(平台券-平台出资)、coupon_pilotprogram(平台券-领航计划，成本由欧莱雅承担)" },
-        { "label": "天猫（TMALL_CLOCK）逻辑", "value": "Compensation=仅退款；Is From Presale=预售；Is From Presale_Compensation=预售仅退款；O+O=2024年2月后 Brand Code=42 且 sellout_channel=TMALLFSS 且 Seller_Memo JSON中 saletype=medical（医美O+O场景）" },
-        { "label": "京东（JD_CLOCK / JDSZ）逻辑", "value": "Coupon=平台券" },
-        { "label": "POS线下门店逻辑", "value": "E-Retailer=Come_from含线上；E-Retailer-KOL=2025年3月后新增达播来源；E-Shop=Come_from含微信或轰趴&达播；Group Sales=POS机勾选是否团购；Instant Delivery=淘闪(原饿了么/天猫官旗)" },
-        { "label": "MARS / MARS_CLOCK逻辑", "value": "E-Retailer=Signaturecode42专柜；BA Name含分摊业绩/搭台直播/线上直播(2024/04/01前)或常规线上(之后)，其他品牌含线上；E-Shop=Dummy Name含微信；Group Sales=BA Name含团购" },
-        { "label": "SAP / VIP_BUYCOOR逻辑", "value": "SAP-Direct=直供GO Direct；VIP_BUYCOOR=唯代购 / 特卖会主站" },
-        { "label": "OMS逻辑", "value": "Cloud Mall-Group Sales(云商城团购)；Cloud Mall-Retail(云商城零售)；Coupon=平台券+达人券" },
-        { "label": "完整分类明细表（共77条组合，节选如下）", "value": "onedata_partition_source | sales_type | sales_type_level2 | Description\nDIS | -2 | -2 | Not Applicable\nDIS_ALLOCATE_CPD | -2 | - | Not Applicable\nDIS_ALLOCATE_PPD | -2 | -/-2 | Not Applicable\nDOUYIN_CLOCK | -2 | -2 | Not Applicable\nDOUYIN_CLOCK | -2 | coupon_kol | 达人券 (普通订单)\nDOUYIN_CLOCK | -2 | coupon_platfrom | 平台券中平台出资部分(普通订单)\nDOUYIN_CLOCK | -2 | coupon_pilotprogram | 平台券-领航计划,成本由欧莱雅承担(普通订单)\nDOUYIN_CLOCK | 全款预售 | -2/coupon_kol/coupon_platfrom/coupon_pilotprogram | 全款预售订单及对应优惠券类型\nDOUYIN_CLOCK | 定金预售 | -2/coupon_kol/coupon_platfrom/coupon_pilotprogram | 定金预售订单及对应优惠券类型\nECOTHERS_OFFLINE_SKU | -2 | -/-2 | Not Applicable\nECOTHERS_ONLINE_SKU | -2 | -/-2 | Not Applicable\nJD_CLOCK | -2 | -/-2 | Not Applicable\nJD_CLOCK | Coupon | -/-2 | 平台券\nJDSZ | -2 | -/-2 | Not Applicable\nJDSZ | Coupon | -/-2 | 平台券\nMARS/MARS_CLOCK | E-Retailer | -/-2 | Signaturecode=42；2024/04/01前BA Name含分摊业绩/搭台直播/线上直播；之后含常规线上；其他品牌BA Name含线上\nMARS | E-Shop | - | Dummy Name含微信\nMARS/MARS_CLOCK | Group Sales | -/-2 | BA Name含团购\nOMS | Cloud Mall-Group Sales | -2 | -\nOMS | Cloud Mall-Retail | -/-2 | -\nOMS | Coupon | - | 平台券+达人券\nPOS | E-Retailer | - | Come_from含线上\nPOS | E-Retailer -KOL | - | 2025年3月后新增，Come_from=E-Retailer-KOL\nPOS | E-Shop | - | Come_from含微信或轰趴&达播\nPOS | Group Sales | - | POS机勾选是否团购\nPOS | Instant Delivery | 淘闪-原饿了么/淘闪-天猫官旗 | -\nSAP | Direct | -/-2 | 直供GO Direct\nSHELF_WTS(_ILOAD) | -2 | -/-2 | Not Applicable\nTMALL_CLOCK | Compensation | -/-2 | 仅退款\nTMALL_CLOCK | Is From Presale | -/-2 | 预售\nTMALL_CLOCK | Is From Presale_Compensation | -/-2 | 预售仅退款\nTMALL_CLOCK | O+O | -/-2 | 2024年2月后：Brand Code=42, sellout_channel=TMALLFSS, Seller_Memo(JSON)中saletype=medical\nTMALL_SUPER | -2 | -2 | Not Applicable\nVIP/VIP_BUYCOOR | -2 | -/-2 | Not Applicable\nVIP_BUYCOOR | 唯代购/特卖会主站 | -2 | -\nWEMALL_CLOCK | -2 | - | Not Applicable" }
+        {
+          "label": "完整分类明细表（原始Excel共77行，按数据源+主分类合并展示为35条唯一组合）",
+          "type": "table",
+          "columns": ["onedata_partition_source", "sales_type", "sales_type_level2", "Description"],
+          "rows": [
+            ["DIS", "-2", "-2", "Not Applicable"],
+            ["DIS_ALLOCATE_CPD", "-2", "-", "Not Applicable"],
+            ["DIS_ALLOCATE_PPD", "-2", "-/-2", "Not Applicable"],
+            ["DOUYIN_CLOCK", "-2", "-2", "Not Applicable"],
+            ["DOUYIN_CLOCK", "-2", "coupon_kol", "达人券 (普通订单)"],
+            ["DOUYIN_CLOCK", "-2", "coupon_platfrom", "平台券中平台出资部分(普通订单)"],
+            ["DOUYIN_CLOCK", "-2", "coupon_pilotprogram", "平台券-领航计划,成本由欧莱雅承担(普通订单)"],
+            ["DOUYIN_CLOCK", "全款预售", "-2/coupon_kol/coupon_platfrom/coupon_pilotprogram", "全款预售订单及对应优惠券类型"],
+            ["DOUYIN_CLOCK", "定金预售", "-2/coupon_kol/coupon_platfrom/coupon_pilotprogram", "定金预售订单及对应优惠券类型"],
+            ["ECOTHERS_OFFLINE_SKU", "-2", "-/-2", "Not Applicable"],
+            ["ECOTHERS_ONLINE_SKU", "-2", "-/-2", "Not Applicable"],
+            ["JD_CLOCK", "-2", "-/-2", "Not Applicable"],
+            ["JD_CLOCK", "Coupon", "-/-2", "平台券"],
+            ["JDSZ", "-2", "-/-2", "Not Applicable"],
+            ["JDSZ", "Coupon", "-/-2", "平台券"],
+            ["MARS/MARS_CLOCK", "E-Retailer", "-/-2", "Signaturecode=42；2024/04/01前BA Name含分摊业绩/搭台直播/线上直播；之后含常规线上；其他品牌BA Name含线上"],
+            ["MARS", "E-Shop", "-", "Dummy Name含微信"],
+            ["MARS/MARS_CLOCK", "Group Sales", "-/-2", "BA Name含团购"],
+            ["OMS", "Cloud Mall-Group Sales", "-2", "-"],
+            ["OMS", "Cloud Mall-Retail", "-/-2", "-"],
+            ["OMS", "Coupon", "-", "平台券+达人券"],
+            ["POS", "E-Retailer", "-", "Come_from含线上"],
+            ["POS", "E-Retailer -KOL", "-", "2025年3月后新增，Come_from=E-Retailer-KOL"],
+            ["POS", "E-Shop", "-", "Come_from含微信或轰趴&达播"],
+            ["POS", "Group Sales", "-", "POS机勾选是否团购"],
+            ["POS", "Instant Delivery", "淘闪-原饿了么/淘闪-天猫官旗", "-"],
+            ["SAP", "Direct", "-/-2", "直供GO Direct"],
+            ["SHELF_WTS(_ILOAD)", "-2", "-/-2", "Not Applicable"],
+            ["TMALL_CLOCK", "Compensation", "-/-2", "仅退款"],
+            ["TMALL_CLOCK", "Is From Presale", "-/-2", "预售"],
+            ["TMALL_CLOCK", "Is From Presale_Compensation", "-/-2", "预售仅退款"],
+            ["TMALL_CLOCK", "O+O", "-/-2", "2024年2月后：Brand Code=42, sellout_channel=TMALLFSS, Seller_Memo(JSON)中saletype=medical"],
+            ["TMALL_SUPER", "-2", "-2", "Not Applicable"],
+            ["VIP/VIP_BUYCOOR", "-2", "-/-2", "Not Applicable"],
+            ["VIP_BUYCOOR", "唯代购/特卖会主站", "-2", "-"],
+            ["WEMALL_CLOCK", "-2", "-", "Not Applicable"]
+          ]
+        }
       ]
     },
     {
@@ -26,8 +60,22 @@
       "source_sheet": "DY  Coupon",
       "summary": "定义抖音正单(Normal Sales)与退单(Sales Return)场景下，各类优惠券/费用字段(平台券、达人券、邮费、领航计划)与实收/实退金额字段的映射关系。",
       "detail_fields": [
-        { "label": "正单（Normal Sales）字段映射", "value": "actual_receive_amount_details type2 → 平台承担优惠金额\nactual_receive_amount_details type3 → 达人承担优惠金额\npost_amount *-1 → 邮费\nshare_coupon_cost_platform *-1 (business_tag:LeadExtra) → 领航计划" },
-        { "label": "退单（Sales Return）字段映射", "value": "refundTotalPaidAmount → 实退金额\nrefundPlatformDiscountReturnAmount → 平台优惠退回金额\nrefundKolDiscountReturnAmount → 达人优惠退回金额\npost_amount *-1 → 邮费\n关联正单获取 share_coupon_cost_platform（按单号和产品）→ 领航计划" },
+        {
+          "label": "交易类型 × 字段名 × 明细项类型 完整映射表（原始Excel全部9行）",
+          "type": "table",
+          "columns": ["交易类型", "字段名", "明细项类型"],
+          "rows": [
+            ["Normal Sales", "actual_receive_amount_details type2", "平台承担优惠金额"],
+            ["Normal Sales", "actual_receive_amount_details type3", "达人承担优惠金额"],
+            ["Normal Sales", "post_amount *-1", "邮费"],
+            ["Normal Sales", "share_coupon_cost_platform *-1 (business_tag:LeadExtra)", "领航计划"],
+            ["Sales Return", "refundTotalPaidAmount", "实退金额"],
+            ["Sales Return", "refundPlatformDiscountReturnAmount", "平台优惠退回金额"],
+            ["Sales Return", "refundKolDiscountReturnAmount", "达人优惠退回金额"],
+            ["Sales Return", "post_amount *-1", "邮费"],
+            ["Sales Return", "关联正单 获取 share_coupon_cost_platform（按单号和产品）", "领航计划"]
+          ]
+        },
         { "label": "应用说明", "value": "退单场景需要回溯关联正单的领航计划分摊金额，而非直接取退单表字段，确保正退单口径一致。" }
       ]
     },
@@ -37,9 +85,46 @@
       "source_sheet": "JD Coupon",
       "summary": "以真实订单号(311758758171 / 320805108648 / 327151960022等)为例，演示京东平台券在订单-产品级别的三种分摊算法：PLV Coupon Allocation按比例扣减法、SDDS样例赠品订单分摊法、SDDS Coupon按Signature By Day分摊法。",
       "detail_fields": [
-        { "label": "口径一：PLV Coupon Allocation（Order Promotion2）", "value": "sellout_actual_value1 = Page value - Total promotion/Total page value * Page value\nCoupon ingestion logic update（2025年8月后按订单按产品重新分配平台券）：\nsellout_actual_value2 = Page value + Total coupon * [(Page value - sellout_actual_value1) / Total promotion]\n示例订单311758758171：6个产品行，Total Page Value=851.4，Total Promotion=120，Total Coupon=80，最终sellout_actual_value2合计=811.4" },
-        { "label": "口径二：SDDS Sample 数据（分摊后，赠品订单场景）", "value": "示例订单320805108648：4个产品行(卡诗系列)，其中3行为赠品订单(order_line_from=赠品订单)，1行为普通订单；\norder_promotion_amount_allocation 按 sellout_retail_value 占比分摊 Total Promotion(920)，\n普通订单行(E4166600)分摊后 sellout_actual_value=4477.07，赠品订单行分摊后金额被抵扣为负值/0" },
-        { "label": "口径三：SDDS Coupon（By Signature By Day分摊）", "value": "数据源：Coupon List表(...jdsz_marketing_coupon_list_detail_day) 关联 Coupon打标表(...jd_coupon_mark_info)，\n关联主键：coupon_id, biz_date, signature_code；粒度：By Signature By Day\n步骤：1) Clock中order_promotion_amount分摊到YFG(order_promotion_amount_allocation)；\n2) 计算每个YFG产品的promotion占Total promotion的占比(promotion%)；\n3) Total Coupon(如Lancome某日平台券546元) × promotion% = 该YFG产品的Coupon分摊值\n示例：产品LF619700分摊比例1.68%，Total Coupon 546.6 → Coupon分摊=9.17" },
+        { "label": "口径一说明：PLV Coupon Allocation（Order Promotion2）", "value": "sellout_actual_value1 = Page value - Total promotion/Total page value * Page value\nCoupon ingestion logic update（2025年8月后按订单按产品重新分配平台券）：\nsellout_actual_value2 = Page value + Total coupon * [(Page value - sellout_actual_value1) / Total promotion]" },
+        {
+          "label": "口径一示例数据（订单311758758171，原始Excel明细）",
+          "type": "table",
+          "columns": ["order_number", "material_code", "platform_sku_name", "sellout_quantity", "Page Value", "Promotion", "sellout_actual_value1", "Coupon分摊", "sellout_actual_value2"],
+          "rows": [
+            ["311758758171", "F8371100", "兰蔻全新彩妆套装唇釉303+是我气垫#N10粉底液礼盒生日礼物送女友", "1", "475.20", "54.75", "420.45", "44.65", "452.87"],
+            ["311758758171", "LE810600", "兰蔻全新清滢保湿柔肤水50ml", "1", "0", "2.93", "-2.93", "0", "0"],
+            ["311758758171", "TCN26203", "兰蔻净澈焕肤极光精华液 7ml【原价勿拍】*", "1", "0", "8.65", "-8.65", "0", "0"],
+            ["311758758171", "LF644700", "兰蔻全新彩妆套装唇釉303+是我气垫#N10粉底液礼盒生日礼物送女友", "1", "376.20", "43.34", "332.86", "53.02", "358.53"],
+            ["311758758171", "TCN38723", "兰蔻Y25 VD礼袋S(耗材)", "1", "0", "2.65", "-2.65", "0", "0"],
+            ["Sum", "Sum", "Sum", "6", "851.40", "119.99999999999991", "731.40", "120", "811.40"]
+          ]
+        },
+        { "label": "口径二说明：SDDS Sample 数据（分摊后，赠品订单场景）", "value": "order_promotion_amount_allocation 按 sellout_retail_value 占比分摊 Total Promotion；赠品订单行(order_line_from=赠品订单)分摊后金额被抵扣为0" },
+        {
+          "label": "口径二示例数据（订单320805108648，卡诗系列）",
+          "type": "table",
+          "columns": ["order_number", "material_code", "platform_sku_name", "sellout_quantity", "sellout_retail_value", "sellout_actual_value", "order_promotion_amount_allocation", "order_line_from"],
+          "rows": [
+            ["320805108648", "E4166900", "卡诗山茶花香氛护发精油补充装75ml修护滋养保湿亮泽防毛躁柔顺礼物", "11", "3685", "259.99", "387.67", "赠品订单"],
+            ["320805108648", "E4210500", "卡诗（KERASTASE）卡诗山茶花经典香氛护发油 15ml 样", "22", "0", "120", "0", "赠品订单"],
+            ["320805108648", "UCN04284", "卡诗（KERASTASE）卡诗假日条纹礼盒", "11", "0", "9.99", "0", "赠品订单"],
+            ["320805108648", "E4166600", "卡诗山茶花护发精油75ml修护保湿滋养防毛躁柔顺礼盒生日礼物", "11", "5060", "530.02", "532.33", "普通订单"]
+          ]
+        },
+        { "label": "口径三说明：SDDS Coupon（By Signature By Day分摊）", "value": "数据源：Coupon List表(...jdsz_marketing_coupon_list_detail_day) 关联 Coupon打标表(...jd_coupon_mark_info)\n关联主键：coupon_id, biz_date, signature_code；粒度：By Signature By Day\n步骤：1) Clock中order_promotion_amount分摊到YFG；2) 计算每个YFG产品promotion占比；3) Total Coupon × promotion% = 该YFG产品Coupon分摊值" },
+        {
+          "label": "口径三示例数据（YFG产品Coupon分摊，节选6条）",
+          "type": "table",
+          "columns": ["order_number", "material_code(YFG)", "sellout_quantity", "Page Value", "Promotion", "promotion%", "Total Coupon", "Coupon Allocation"],
+          "rows": [
+            ["327151960022", "LF619700", "372", "5.7", "8", "0.0168", "546.6", "9.171333"],
+            ["327263281181", "LE935500", "378", "1.43", "2", "0.0042", "546.6", "2.292833"],
+            ["327263349311", "LE320900", "949.27", "0.56", "0.73", "0.0015", "546.6", "0.831371"],
+            ["327270170044", "LG124400", "587", "4.85", "8", "0.0168", "546.6", "9.171333"],
+            ["327324142512", "LE843600", "578", "1.69", "2", "0.0042", "546.6", "2.292833"],
+            ["344733508807", "LE802300", "980.28", "57.96", "99.72", "0.2091", "546.6", "114.320669"]
+          ]
+        },
         { "label": "文档来源", "value": "JD Platform Coupon Guidebook" }
       ]
     },
@@ -49,32 +134,28 @@
       "source_sheet": "TMALL 5 Sources",
       "summary": "Tmall 5 source NSO landscape：定义天猫订单业绩归属的9个细分来源(Source Lv1/Lv2/Lv3)及其归属优先级(1=最高)、数据源、判定方法，确保一笔订单只归属唯一来源。",
       "detail_fields": [
-        { "label": "归属优先级总览（1=最高）", "value": "1: Captain-KOL (captain_kol)\n2: Captain-non KOL (captain_non kol)\n4: KOL-linkage-类目定向 (kol_linkage_cep)\n5: other KOL-direct (other kol_direct)\n6: other KOL-linkage-类目定向 (other kol_linkage_cep)\n7: KOL-linkage-定向 (kol_linkage_ep)\n8: other KOL-linkage-定向/抖音挂链 (other kol_linkage_ep)\n9: Store live (store live)\n10: Others (others，无自有数据源)\n注：优先级3为KOL-direct（李佳琦Austin直播间直投单品计划）" },
-        { "label": "KOL-linkage-类目定向（优先级4）", "value": "数据源：【热浪引擎-直播推广计划】+【热浪引擎-订单明细】\n方法：筛选【热浪引擎-订单明细】中 达人昵称=李佳琦Austin，排除已归入KOL-direct的剩余子订单\n等候期：15天；DB: dblink_211.tmall_media_hot...hotwave_personal_accounts_deal_commission_deal_day" },
-        { "label": "KOL-linkage-定向（优先级7）", "value": "数据源：【淘宝联盟-订单明细】\n方法：计划名称不属于[通用计划,营销计划,如意投计划,自选计划,淘花计划]，且来源或淘客昵称属于李佳琦相关账号\nDB: dblink_211.tbk...app_ad_effectreport_orderdetails_Clinchdeal_day" },
-        { "label": "other KOL-direct（优先级5）", "value": "数据源：【热浪引擎-直播推广计划】+【热浪引擎-订单明细】\n方法：合作主播<>李佳琦Austin，合作状态=[新增计划主播已确认,修改计划主播已确认]，按计划id/商品ID/计划时间/佣金率四重匹配订单\nDB: dblink_211.tmall_media_livestream...app_live_data_achievement_performance_detail_day" },
-        { "label": "other KOL-linkage-类目定向（优先级6）", "value": "筛选【热浪引擎-订单明细】中 达人昵称<>李佳琦Austin，排除已归入other KOL-direct的剩余子订单" },
-        { "label": "other KOL-linkage-定向（优先级8，即抖音挂链）", "value": "筛选【淘宝联盟-订单明细】中 计划名称不属于5种通用计划，且来源或淘客昵称不属于李佳琦相关账号" },
-        { "label": "Captain-KOL（优先级1）", "value": "数据源：【淘宝联盟-订单明细】\n方法：团长名称属于[翰风盛世联盟,所有女生,成新团,龙辉联盟,玺樾联盟]，服务费金额>0，计划名称=营销计划" },
-        { "label": "Captain-non KOL（优先级2）", "value": "同上但团长名称不属于上述5个联盟名单" },
-        { "label": "Store live（优先级9）", "value": "数据源：【淘宝直播-订单明细】\n方法：商品一级类目<>购物金（剔除购物金销售）；正单按支付时间结算，退单按退款成功时间结算；等候期约1天可产出正单" },
-        { "label": "Others（优先级10）", "value": "无自有数据源，未被以上任何source打标的订单，等候期按sources中最长等候期计算(15天)" },
-        { "label": "通用Q&A", "value": "Q：一笔订单被多来源同时命中如何归类？A：按优先级(1最高)分配，确保仅归属一个source\n\nQ：热浪引擎/淘宝联盟结算滞后(15天以上)导致数据波动如何处理？A：维持15天等候期，NSO在特定限期内持续更新，到期后冻结数字，兼顾及时性与准确性\n\nQ：能否用热浪引擎直播推广计划替代kepler直播计划或纯佣金率划线区分direct/linkage？A：可用主播名称+商品ID+佣金率+计划时间四条件联合判定，计划时间需与订单创建时间匹配；不控制计划推广状态；退款只改状态不删记录，不影响归属判定" }
-      ]
-    },
-    {
-      "title": "抖音（DY）4大业绩来源归属逻辑（KOL vs STORE × Live/Video/Product Card/Others）",
-      "category": "达人/来源归属",
-      "source_sheet": "DY 4 Sources",
-      "summary": "基于 c_biz 字段区分精选联盟(KOL达人带货)与小店自卖(STORE自播/自卖)，再结合 order_source_content_type 流量体裁(直播/短视频/商品卡/其他)及 author_id 打标规则，划分为8种细分来源标签。",
-      "detail_fields": [
-        { "label": "渠道一级判定（c_biz）", "value": "c_biz = 2 → 来源：精选联盟（sales source lv1 = KOL）\nc_biz ≠ 2 → 来源：小店自卖（sales source lv1 = STORE）" },
-        { "label": "KOL（精选联盟）细分——新逻辑（有 content_type 标记）", "value": "compass_source_content_type_live → KOL Live\ncompass_source_content_type_video → KOL Video\ncompass_source_content_type_product_card → KOL Product Card\ncompass_source_content_type_other → KOL Others" },
-        { "label": "KOL（精选联盟）细分——旧逻辑（content_type为null）", "value": "videoid不为空 → KOL Video（c_biz=2）\nroomid不为空且room_id<>0 → KOL Live（c_biz=2）\n其余 → KOL Others（c_biz=2）" },
-        { "label": "STORE（小店自卖）细分——新逻辑", "value": "compass_source_content_type_live → 识别author id为欧莱雅品牌账号，是→Store Live，否→Store Others\ncompass_source_content_type_video → 识别author id为欧莱雅品牌账号，是→Store Video，否→Store Others\ncompass_source_content_type_product_card → Store Product Card\ncompass_source_content_type_other → Store Others" },
-        { "label": "STORE（小店自卖）细分——旧逻辑", "value": "videoid不为空 → Store Video（c_biz<>2）\nroomid不为空且room_id<>0 → Store Live（c_biz<>2）\n其余 → Store Others（c_biz<>2）" },
-        { "label": "特殊场景归属说明", "value": "① 通过达人直播间进入达人橱窗购买非挂车商品（直播间溢出，author id=0）→ 归属 KOL Others\n② 通过达人短视频进入达人橱窗购买非挂车商品（短视频溢出，author id=0）→ 归属 KOL Others\n③ 通过达人直播间加购14日后付款，归属自店售卖(author id=达人ID) → Store Others\n④ 通过达人直播间/短视频进入店铺下单非挂车商品(author id=达人ID) → Store Others\n⑤ 通过自店直播间/短视频进入店铺购买非挂车商品（溢出，author id=0）→ Store Others" }
-      ]
-    }
-  ]
-}
+        {
+          "label": "来源归属总览表（原始Excel全部9行，No.2-10）",
+          "type": "table",
+          "columns": ["No.", "Source Lv1", "Source Lv2", "Source Lv3", "Source Flag", "归属优先级(1最高)", "数据源", "数据等候期"],
+          "rows": [
+            ["2", "KOL", "KOL-linkage", "KOL-linkage-类目定向", "kol_linkage_cep", "4", "【热浪引擎-直播推广计划】+【热浪引擎-订单明细】", "15天"],
+            ["3", "KOL", "KOL-linkage", "KOL-linkage-定向", "kol_linkage_ep", "7", "【淘宝联盟-订单明细】", "15天"],
+            ["4", "other KOL", "other KOL-direct", "other KOL-direct", "other kol_direct", "5", "【热浪引擎-直播推广计划】+【热浪引擎-订单明细】", "15天"],
+            ["5", "other KOL", "other KOL-linkage", "other KOL-linkage-类目定向", "other kol_linkage_cep", "6", "【热浪引擎-直播推广计划】+【热浪引擎-订单明细】", "15天"],
+            ["6", "other KOL", "other KOL-linkage", "other KOL-linkage-定向（即抖音挂链)", "other kol_linkage_ep", "8", "【淘宝联盟-订单明细】", "15天"],
+            ["7", "Captain", "Captain-KOL", "Captain-KOL", "captain_kol", "1", "【淘宝联盟-订单明细】", "15天"],
+            ["8", "Captain", "Captain-non KOL", "Captain-non KOL", "captain_non kol", "2", "【淘宝联盟-订单明细】", "15天"],
+            ["9", "Store live", "Store live", "Store live", "store live", "9", "【淘宝直播-订单明细】", "15天，但实际上平台能相隔1天产出正单订单"],
+            ["10", "Others", "Others", "Others", "others", "10", "无自有数据源", "15天，Others按sources中最长等候期计算"]
+          ]
+        },
+        { "label": "KOL-linkage-类目定向（优先级4）判定方法", "value": "筛选【热浪引擎-订单明细】中 达人昵称=李佳琦Austin，排除已归入KOL-direct的剩余子订单\nDB: dblink_211.tmall_media_hot...hotwave_personal_accounts_deal_commission_deal_day" },
+        { "label": "KOL-linkage-定向（优先级7）判定方法", "value": "计划名称不属于[通用计划,营销计划,如意投计划,自选计划,淘花计划]，且来源或淘客昵称属于李佳琦相关账号\nDB: dblink_211.tbk...app_ad_effectreport_orderdetails_Clinchdeal_day" },
+        { "label": "other KOL-direct（优先级5）判定方法", "value": "合作主播<>李佳琦Austin，合作状态=[新增计划主播已确认,修改计划主播已确认]，按计划id/商品ID/计划时间/佣金率四重匹配订单\nDB: dblink_211.tmall_media_livestream...app_live_data_achievement_performance_detail_day" },
+        { "label": "other KOL-linkage-类目定向（优先级6）判定方法", "value": "筛选【热浪引擎-订单明细】中 达人昵称<>李佳琦Austin，排除已归入other KOL-direct的剩余子订单" },
+        { "label": "other KOL-linkage-定向（优先级8，即抖音挂链）判定方法", "value": "筛选【淘宝联盟-订单明细】中 计划名称不属于5种通用计划，且来源或淘客昵称不属于李佳琦相关账号" },
+        { "label": "Captain-KOL（优先级1）判定方法", "value": "团长名称属于[翰风盛世联盟,所有女生,成新团,龙辉联盟,玺樾联盟]，服务费金额>0，计划名称=营销计划" },
+        { "label": "Captain-non KOL（优先级2）判定方法", "value": "同上但团长名称不属于上述5个联盟名单" },
+        { "label": "Store live（优先级9）判定方法", "value": "商品一级类目<>购物金（剔除购物金销售）；正单按支付时间结算，退单按退款成功时间结算" },
+        { "label": "Othe
