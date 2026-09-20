@@ -1,48 +1,55 @@
 
 {
-  "generatedAt": "2026-09-20",
+  "generatedAt": "2026-09-20T08:12:34",
   "fact_table": {
-    "name": "FACT_SELLOUT",
+    "name": "fact_sellout",
+    "key_field": "sellout_id",
     "fields": [
-      "order_number", "material_code", "sellout_quantity", "platform_sku_name",
-      "sellout_actual_value", "sellout_retail_value", "onedata_partition",
-      "onedata_partition_source", "sales_organization_code", "data_source",
-      "channelType", "sales_type", "sales_type_level2", "pt_partition_date"
+      "sellout_id", "order_number", "onedata_partition_source", "sales_type",
+      "sales_type_level2", "channel_l0", "channel_l1", "channel_l2", "channel_l3",
+      "material_code", "sellout_quantity", "page_value", "promotion_amount",
+      "sellout_actual_value", "coupon_amount", "source_flag", "c_biz",
+      "order_source_content_type", "author_id", "biz_date"
     ]
   },
   "dimension_tables": [
     {
-      "name": "DIM_MATERIAL",
+      "name": "dim_sales_type",
+      "key_field": "onedata_partition_source + sales_type + sales_type_level2",
+      "fields": ["onedata_partition_source", "sales_type", "sales_type_level2", "description"]
+    },
+    {
+      "name": "dim_coupon_rule",
+      "key_field": "platform + rule_code",
+      "fields": ["platform", "rule_code", "field_name", "detail_item_type", "allocation_formula"]
+    },
+    {
+      "name": "dim_source_attribution_tmall",
+      "key_field": "source_lv3",
+      "fields": ["source_lv1", "source_lv2", "source_lv3", "source_flag", "priority", "data_source", "wait_period_days", "method"]
+    },
+    {
+      "name": "dim_source_attribution_dy",
+      "key_field": "c_biz + content_type",
+      "fields": ["c_biz", "source_lv1", "order_source_content_type", "source_lv2_result", "special_scenario_note"]
+    },
+    {
+      "name": "dim_material",
       "key_field": "material_code",
-      "fields": [
-        "material_code", "material_name_zh", "material_name_en",
-        "material_type_code", "material_group_code", "brand_code",
-        "brand_name_en", "sub_brand_code", "axis_code", "axis_name_en",
-        "metier_code", "material_category_zh", "material_franchise_zh",
-        "material_volume_zh"
-      ]
+      "fields": ["material_code", "platform_sku_name", "brand", "yfg_flag"]
     },
     {
-      "name": "DIM_ORGANIZATION",
-      "key_field": "sales_organization_code",
-      "fields": [
-        "sales_organization_code", "sales_organization_name_zh",
-        "division_code", "division_name_en", "signature_code", "signature_name_en"
-      ]
-    },
-    {
-      "name": "DIM_SOURCE",
-      "key_field": "data_source",
-      "fields": [
-        "data_source", "channelType", "onedata_partition_source",
-        "sales_type", "sales_type_level2"
-      ]
+      "name": "dim_channel",
+      "key_field": "channel_l3",
+      "fields": ["division_name", "channel_l0", "channel_l1", "channel_l2", "channel_l3"]
     }
   ],
   "relationships": [
-    { "fact_field": "material_code", "dim_table": "DIM_MATERIAL", "dim_key": "material_code" },
-    { "fact_field": "sales_organization_code", "dim_table": "DIM_ORGANIZATION", "dim_key": "sales_organization_code" },
-    { "fact_field": "data_source", "dim_table": "DIM_SOURCE", "dim_key": "data_source" },
-    { "fact_field": "channelType", "dim_table": "DIM_SOURCE", "dim_key": "channelType" }
+    { "fact_field": "onedata_partition_source", "dim_table": "dim_sales_type", "dim_key": "onedata_partition_source" },
+    { "fact_field": "sales_type_level2", "dim_table": "dim_coupon_rule", "dim_key": "rule_code" },
+    { "fact_field": "source_flag", "dim_table": "dim_source_attribution_tmall", "dim_key": "source_flag" },
+    { "fact_field": "c_biz", "dim_table": "dim_source_attribution_dy", "dim_key": "c_biz" },
+    { "fact_field": "material_code", "dim_table": "dim_material", "dim_key": "material_code" },
+    { "fact_field": "channel_l3", "dim_table": "dim_channel", "dim_key": "channel_l3" }
   ]
 }
