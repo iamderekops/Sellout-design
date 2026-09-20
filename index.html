@@ -3,234 +3,162 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>Sellout Design · 数据字典</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<title>ONE L'ORÉAL Data</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <style>
   :root{
-    --gray-bg:#F5F5F7; --white:#FFFFFF; --black:#1D1D1F; --sub:#6E6E73;
-    --blue:#0066CC; --border:rgba(0,0,0,0.08); --card-dark:#1D1D1F;
-    --c-navy:#1B2A4A; --c-teal:#2E6F95; --c-emerald:#2F7D6B; --c-gold:#D98E3B;
-    --c-rose:#B5495B; --c-purple:#6B5B95; --c-slate:#5C6B7A; --c-sky:#4F8FC0;
+    --navy:#1B2A4A; --teal:#2E6F95; --green:#2F7D6B; --orange:#D98E3B;
+    --border:#e7e9ee; --bg:#f6f7fa; --text:#1c2333; --muted:#6b7280;
   }
   *{box-sizing:border-box;}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Helvetica Neue",Arial,sans-serif;background:var(--gray-bg);color:var(--black);}
+  body{margin:0;font-family:-apple-system,"Segoe UI",Arial,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);}
+  header{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
+  .header-top{display:flex;align-items:center;gap:10px;padding:14px 24px 0;}
+  .logo-dots{width:20px;height:20px;display:inline-block;}
+  .brand-sub{font-size:11px;letter-spacing:1px;color:var(--muted);font-weight:600;}
+  .brand-main{font-size:20px;font-weight:800;margin-top:2px;}
+  .nav-links{display:flex;gap:28px;padding:10px 24px 0;margin-top:6px;}
+  .nav-links a{text-decoration:none;color:var(--muted);font-size:14px;font-weight:600;padding-bottom:12px;border-bottom:2px solid transparent;cursor:pointer;}
+  .nav-links a.active{color:var(--navy);border-bottom-color:var(--navy);}
+  .nav-links a:hover{color:var(--navy);}
+  main{max-width:1200px;margin:0 auto;padding:24px;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
 
-  .nav{background:rgba(255,255,255,0.8); backdrop-filter:blur(20px) saturate(180%); border-bottom:1px solid var(--border);
-    position:sticky; top:0; z-index:200; padding:0 40px; height:56px; display:flex; align-items:center; justify-content:space-between;}
-  .nav-left{display:flex; align-items:center; gap:28px;}
+  .card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px;}
+  .card h3{margin:0 0 4px;font-size:16px;}
+  .desc{color:var(--muted);font-size:13px;margin-bottom:10px;}
 
-  .oneloreal-logo{display:flex; align-items:center; gap:8px; line-height:1;}
-  .oneloreal-logo .top-row{display:flex; flex-direction:column;}
-  .oneloreal-logo .brand-line{font-size:9.5px; font-weight:800; letter-spacing:0.8px; color:var(--black); text-transform:uppercase;}
-  .oneloreal-logo .data-row{display:flex; align-items:center; gap:3px; margin-top:1px;}
-  .dot-d{
-    display:grid; grid-template-columns:repeat(3, 3.5px); grid-template-rows:repeat(4, 3.5px); gap:1.6px;
-    margin-right:2px;
-  }
-  .dot-d span{width:3.5px; height:3.5px; border-radius:50%; background:var(--black); opacity:0.85;}
-  .dot-d span.off{opacity:0;}
-  .data-text{font-size:19px; font-weight:800; letter-spacing:-0.5px; color:var(--black);}
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}
+  .kpi-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:.15s;}
+  .kpi-card:hover{border-color:var(--navy);}
+  .kpi-card.active{border-color:var(--navy);box-shadow:0 0 0 2px rgba(27,42,74,.12);}
+  .kpi-label{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;}
+  .kpi-value{font-size:26px;font-weight:800;margin-top:6px;}
+  .kpi-sub{font-size:12px;color:var(--muted);margin-top:4px;}
 
-  .nav-links{display:flex; gap:24px; font-size:12.5px;}
-  .nav-links a{color:var(--sub); text-decoration:none; cursor:pointer; transition:color .15s;}
-  .nav-links a:hover{color:var(--black);}
-  .nav-status{display:flex; align-items:center; gap:14px; font-size:12px; color:var(--sub);}
-  .dot{width:7px;height:7px;border-radius:50%;background:#C7C7CC;}
-  .dot.on{background:#34C759; box-shadow:0 0 0 3px rgba(52,199,89,0.2);}
-  .dot.err{background:#FF3B30; box-shadow:0 0 0 3px rgba(255,59,48,0.2);}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .chart-wrap{height:260px;}
 
-  .hero{max-width:1440px; margin:0 auto; padding:60px 40px 36px; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px;}
-  .hero h1{font-size:52px; font-weight:700; letter-spacing:-1.5px; margin:0; line-height:1.05;}
-  .hero p.sub{color:var(--sub); font-size:16px; margin:10px 0 0;}
-  .hero-links a{color:var(--blue); font-size:14px; text-decoration:none;}
-  .hero-links a:hover{text-decoration:underline;}
-
-  .container{max-width:1440px; margin:0 auto; padding:0 40px 80px;}
-  .empty-state{text-align:center; padding:80px 20px; color:var(--sub);}
-  .empty-state h2{color:var(--black); font-size:24px; margin-bottom:8px;}
-  .diag{font-size:12px; color:var(--sub); margin-top:14px; background:#fff; border-radius:12px; padding:12px 16px; display:inline-block; border:1px solid var(--border);}
-
-  .kpi-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:20px;}
-  .kpi-card{
-    background:var(--white); border-radius:22px; padding:26px; border:1px solid var(--border);
-    cursor:pointer; transition:all .2s ease; position:relative;
-    display:flex; flex-direction:column;
-  }
-  .kpi-card:hover{transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,0,0,0.1); border-color:transparent;}
-  .kpi-card .label{
-    font-size:12.5px; color:var(--sub); font-weight:500;
-    display:flex; align-items:center; justify-content:space-between;
-    line-height:1.2; height:16px; margin-bottom:16px;
-  }
-  .kpi-card .label .hint{font-size:11px; opacity:0; transition:opacity .2s; white-space:nowrap;}
-  .kpi-card:hover .label .hint{opacity:0.6;}
-  .kpi-card .value{font-size:38px; font-weight:700; letter-spacing:-1px; line-height:1; margin-bottom:10px;}
-  .kpi-card .sub{font-size:12.5px; color:var(--sub); line-height:1.3; margin-top:0;}
-  .kpi-card.active{background:var(--c-navy); color:#fff; border-color:transparent;}
-  .kpi-card.active .label{color:rgba(255,255,255,0.65);}
-  .kpi-card.active .sub{color:rgba(255,255,255,0.55);}
-
-  .grid-2{display:grid; grid-template-columns:1.1fr 1fr; gap:16px; margin-bottom:16px;}
-  .card{background:var(--white); border-radius:22px; padding:26px; border:1px solid var(--border); position:relative;}
-  .card h3{margin:0 0 4px; font-size:19px; font-weight:600; letter-spacing:-0.3px;}
-  .card .desc{font-size:13px; color:var(--sub); margin-bottom:16px;}
-  .chart-wrap{position:relative; height:260px;}
-
-  .filter-row{display:flex; flex-wrap:wrap; gap:12px; margin-bottom:18px;}
+  .filter-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;}
   .dropdown{position:relative;}
-  .dropdown-btn{
-    display:flex; align-items:center; gap:8px; padding:11px 16px; border-radius:12px;
-    background:var(--gray-bg); border:1px solid var(--border); font-size:13.5px; font-weight:500;
-    cursor:pointer; color:var(--black); min-width:150px; justify-content:space-between; transition:all .15s;
-  }
-  .dropdown-btn:hover{background:#EAEAEC;}
-  .dropdown-btn.has-selection{background:var(--c-navy); color:#fff;}
-  .dropdown-btn .arrow{font-size:10px; opacity:.6; transition:transform .2s;}
-  .dropdown.open .dropdown-btn .arrow{transform:rotate(180deg);}
-  .dropdown-panel{
-    display:none; position:absolute; top:calc(100% + 8px); left:0; z-index:50;
-    background:#fff; border:1px solid var(--border); border-radius:16px; box-shadow:0 12px 32px rgba(0,0,0,0.12);
-    padding:12px; min-width:260px; max-height:340px; overflow-y:auto;
-  }
+  .dropdown-btn{border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;background:#fff;}
+  .dropdown-btn.has-selection{border-color:var(--navy);color:var(--navy);font-weight:600;}
+  .dropdown-panel{display:none;position:absolute;top:calc(100% + 6px);left:0;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.08);padding:8px;min-width:220px;max-height:280px;overflow:auto;z-index:20;}
   .dropdown.open .dropdown-panel{display:block;}
-  .dropdown-panel-head{display:flex; align-items:center; justify-content:flex-end; padding:2px 4px 10px; border-bottom:1px solid var(--border); margin-bottom:8px;}
-  .dropdown-panel-head .clear-one{font-size:11.5px; color:var(--sub); cursor:pointer;}
-  .option-row{display:flex; align-items:center; gap:10px; padding:8px 6px; border-radius:8px; cursor:pointer; font-size:13.5px;}
-  .option-row:hover{background:var(--gray-bg);}
-  .option-row input{accent-color:var(--c-navy); width:15px; height:15px;}
-  .option-row .cnt{margin-left:auto; font-size:11.5px; color:var(--sub);}
-  .option-empty{font-size:12.5px; color:var(--sub); padding:12px 6px; text-align:center;}
+  .dropdown-panel-head{display:flex;justify-content:flex-end;padding:2px 4px 6px;}
+  .clear-one{font-size:12px;color:var(--teal);cursor:pointer;}
+  .option-row{display:flex;align-items:center;gap:8px;padding:6px 4px;font-size:13px;border-radius:6px;}
+  .option-row:hover{background:#f2f4f8;}
+  .option-row .cnt{margin-left:auto;color:var(--muted);font-size:12px;}
+  .option-empty{color:var(--muted);font-size:12px;padding:6px 4px;}
 
-  .search-bar{width:100%; padding:13px 18px; border-radius:14px; border:1px solid var(--border); background:var(--gray-bg); font-size:14px; margin:8px 0 16px; outline:none;}
-  .search-bar:focus{border-color:var(--blue); box-shadow:0 0 0 3px rgba(0,102,204,0.12); background:#fff;}
+  .search-bar{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-size:13px;margin-bottom:10px;}
+  .result-summary{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:10px;}
+  .clear-link{color:var(--teal);cursor:pointer;}
 
-  .result-summary{font-size:12.5px; color:var(--sub); margin-bottom:14px; display:flex; align-items:center; justify-content:space-between;}
-  .clear-link{color:var(--blue); cursor:pointer; font-weight:500;}
+  .dict-grid,.topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
+  .dict-item,.topic-card{border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;background:#fff;transition:.15s;}
+  .dict-item:hover,.topic-card:hover{border-color:var(--navy);transform:translateY(-2px);}
+  .dict-title,.topic-card h3{font-size:14px;font-weight:700;margin:0 0 6px;}
+  .dict-path{font-size:12px;color:var(--muted);margin-bottom:8px;}
+  .badges{display:flex;gap:6px;flex-wrap:wrap;}
+  .badge{font-size:11px;padding:3px 8px;border-radius:999px;background:#eef1f7;color:var(--navy);}
+  .badge.online{background:#e6f3ee;color:var(--green);}
+  .badge.offline{background:#fbeee0;color:var(--orange);}
+  .badge.freq{background:#eee6f6;color:#6b5b95;}
+  .link-more{font-size:12px;color:var(--teal);font-weight:600;}
 
-  .dict-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:12px;}
-  .dict-item{
-    background:var(--white); border:1px solid var(--border); border-radius:16px; padding:16px;
-    cursor:pointer; transition:all .2s ease;
-  }
-  .dict-item:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,0.08); border-color:transparent;}
-  .dict-title{font-size:13.5px; font-weight:600; line-height:1.3;}
-  .dict-path{font-size:11px; color:var(--sub); margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  .badges{display:flex; gap:5px; flex-wrap:wrap; margin-top:10px;}
-  .badge{font-size:10.5px; padding:3px 9px; border-radius:980px; font-weight:600;}
-  .badge.online{background:rgba(27,42,74,0.12); color:var(--c-navy);}
-  .badge.offline{background:rgba(217,142,59,0.18); color:#A66B22;}
-  .badge.div{background:rgba(92,107,122,0.14); color:var(--c-slate);}
-  .badge.freq{background:rgba(47,125,107,0.16); color:var(--c-emerald);}
-  .empty-note{text-align:center; color:var(--sub); padding:24px; font-size:13px; grid-column:1/-1;}
+  .empty-note{grid-column:1/-1;text-align:center;color:var(--muted);font-size:13px;padding:20px 0;}
 
-  .modal-overlay{
-    display:none; position:fixed; inset:0; background:rgba(29,29,31,0.5); backdrop-filter:blur(6px);
-    z-index:500; align-items:center; justify-content:center; padding:24px;
-  }
+  .modal-overlay{position:fixed;inset:0;background:rgba(10,14,25,.45);display:none;align-items:center;justify-content:center;z-index:100;}
   .modal-overlay.show{display:flex;}
-  .modal-box{
-    background:#fff; border-radius:24px; max-width:640px; width:100%; max-height:82vh; overflow-y:auto;
-    padding:36px; position:relative; box-shadow:0 30px 80px rgba(0,0,0,0.3);
-    animation:modalPop .25s ease;
-  }
-  @keyframes modalPop{ from{opacity:0; transform:scale(0.94) translateY(10px);} to{opacity:1; transform:scale(1) translateY(0);} }
-  .modal-close{
-    position:absolute; top:20px; right:20px; width:32px; height:32px; border-radius:50%;
-    background:var(--gray-bg); border:none; cursor:pointer; font-size:16px; color:var(--sub);
-    display:flex; align-items:center; justify-content:center; transition:background .15s;
-  }
-  .modal-close:hover{background:#e5e5e7;}
-  .modal-title{font-size:26px; font-weight:700; letter-spacing:-0.5px; margin:0 0 6px; padding-right:40px;}
-  .modal-path{font-size:13px; color:var(--sub); margin-bottom:16px;}
-  .modal-badges{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:24px;}
-  .modal-detail-row{margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--border);}
-  .modal-detail-row:last-child{border-bottom:none;}
-  .modal-detail-row .k{font-size:11.5px; font-weight:600; color:var(--sub); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px;}
-  .modal-detail-row .v{font-size:14px; color:var(--black); line-height:1.7; white-space:pre-wrap;}
+  .modal-box{background:#fff;border-radius:16px;padding:26px;max-width:640px;width:92%;max-height:82vh;overflow:auto;position:relative;}
+  .modal-close{position:absolute;top:14px;right:16px;border:none;background:#f2f4f8;border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:14px;}
+  .modal-title{font-size:18px;font-weight:800;margin-bottom:4px;padding-right:30px;}
+  .modal-path{font-size:12px;color:var(--muted);margin-bottom:12px;}
+  .modal-badges{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+  .modal-detail-row{display:grid;grid-template-columns:140px 1fr;gap:10px;font-size:13px;padding:8px 0;border-top:1px solid var(--border);}
+  .modal-detail-row .k{color:var(--muted);}
+  .modal-detail-row .v{white-space:pre-wrap;}
 
-  /* ---------- 回到顶部按钮 ---------- */
-  .back-to-top{
-    position:fixed; right:32px; bottom:32px; width:48px; height:48px; border-radius:50%;
-    background:var(--c-navy); color:#fff; border:none; cursor:pointer;
-    display:flex; align-items:center; justify-content:center; font-size:18px;
-    box-shadow:0 8px 24px rgba(27,42,74,0.35);
-    opacity:0; visibility:hidden; transform:translateY(12px);
-    transition:opacity .25s ease, transform .25s ease, visibility .25s ease, background .2s ease;
-    z-index:300;
-  }
-  .back-to-top.show{opacity:1; visibility:visible; transform:translateY(0);}
-  .back-to-top:hover{background:#243962;}
+  .join-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .join-table th,.join-table td{border:1px solid var(--border);padding:8px 10px;text-align:left;}
+  .join-table th{background:#f2f4f8;}
 
-  @media(max-width:1000px){
-    .hero h1{font-size:36px;}
-    .kpi-grid{grid-template-columns:repeat(2,1fr);}
-    .grid-2{grid-template-columns:1fr;}
-    .dict-grid{grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));}
-    .back-to-top{right:20px; bottom:20px; width:44px; height:44px;}
-  }
+  #backToTopBtn{position:fixed;right:24px;bottom:24px;width:42px;height:42px;border-radius:50%;background:var(--navy);color:#fff;border:none;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:16px;}
+  #backToTopBtn.show{display:flex;}
+
+  .status-bar{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:10px;}
+  .status-dot{width:8px;height:8px;border-radius:50%;background:#ccc;}
+  .status-dot.on{background:var(--green);}
+  .status-dot.err{background:#c0392b;}
+  #emptyState{display:none;background:#fff5f5;border:1px solid #f4c7c3;border-radius:12px;padding:16px;margin-bottom:16px;}
+  #diagBox{font-size:12px;color:#a33;white-space:pre-wrap;margin-top:6px;}
+
+  #erDiagramContainer{overflow:auto;}
 </style>
 </head>
 <body>
 
-<div class="nav">
-  <div class="nav-left">
-    <div class="oneloreal-logo">
-      <div class="dot-d">
-        <span></span><span></span><span class="off"></span>
-        <span></span><span class="off"></span><span></span>
-        <span></span><span class="off"></span><span></span>
-        <span></span><span></span><span class="off"></span>
-      </div>
-      <div class="top-row">
-        <div class="brand-line">ONE L'ORÉAL</div>
-        <div class="data-row"><span class="data-text">Data</span></div>
-      </div>
-    </div>
-
-    <div class="nav-links">
-      <a data-target="overviewSection">数据总览</a>
-      <a data-target="detailSection">渠道筛选</a>
+<header>
+  <div class="header-top">
+    <svg class="logo-dots" viewBox="0 0 20 20"><circle cx="3" cy="3" r="2" fill="#1B2A4A"/><circle cx="10" cy="3" r="2" fill="#1B2A4A"/><circle cx="17" cy="3" r="2" fill="#1B2A4A"/><circle cx="3" cy="10" r="2" fill="#1B2A4A"/><circle cx="10" cy="10" r="2" fill="#1B2A4A"/><circle cx="3" cy="17" r="2" fill="#1B2A4A"/></svg>
+    <div>
+      <div class="brand-sub">ONE L'ORÉAL</div>
+      <div class="brand-main">Data</div>
     </div>
   </div>
-  <div class="nav-status">
+  <div class="nav-links" id="tabNav">
+    <a data-tab="tab1" class="active">数据总览</a>
+    <a data-tab="tab2">专题页</a>
+    <a data-tab="tab3">Sellout 大宽表设计</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ===================== TAB 1：数据总览 ===================== -->
+<section id="tab1" class="tab-panel active">
+
+  <div class="status-bar">
+    <span class="status-dot" id="statusDot"></span>
     <span id="statusText">正在连接数据源...</span>
-    <span class="dot" id="statusDot"></span>
   </div>
-</div>
 
-<div class="hero">
-  <div>
-    <h1>数据字典。<br>按渠道筛选查看。</h1>
-    <p class="sub">Sellout Design 渠道口径与取数逻辑，支持多维度组合筛选。</p>
-  </div>
-  <div class="hero-links"><a href="#detailSection">查看数据明细 ↓</a></div>
-</div>
-
-<div class="container">
-
-  <div class="empty-state" id="emptyState" style="display:none;">
-    <h2>暂时无法加载数据</h2>
-    <p>未能读取到 data.json，请确认该文件已上传到本仓库根目录，且是合法的JSON格式。</p>
-    <div class="diag" id="diagBox"></div>
+  <div id="emptyState">
+    <b>暂时无法加载数据</b>
+    <div>未能读取到 data.json，请确认该文件已上传到本仓库根目录，且是合法的JSON格式。</div>
+    <div id="diagBox"></div>
   </div>
 
   <div id="dashboard" style="display:none;">
-    <div class="kpi-grid" id="overviewSection">
+    <div class="card">
+      <h3>数据字典。按渠道筛选查看。</h3>
+      <div class="desc">Sellout Design 渠道口径与取数逻辑，支持多维度组合筛选。</div>
+    </div>
+
+    <div class="kpi-row">
       <div class="kpi-card" id="kpiCardTotal" data-kpi="total">
-        <div class="label">总记录数 <span class="hint">点击重置筛选 ↻</span></div>
-        <div class="value" id="kpiTotal">-</div><div class="sub">条数据字典条目</div>
+        <div class="kpi-label"><span>总记录数</span><span>点击重置筛选 ↻</span></div>
+        <div class="kpi-value" id="kpiTotal">-</div>
+        <div class="kpi-sub">条数据字典条目</div>
       </div>
       <div class="kpi-card" id="kpiCardDivision" data-kpi="division">
-        <div class="label">Division 数量 <span class="hint">点击筛选 →</span></div>
-        <div class="value" id="kpiDivision">-</div><div class="sub" id="kpiDivisionList">-</div>
+        <div class="kpi-label"><span>Division 数量</span><span>点击筛选 →</span></div>
+        <div class="kpi-value" id="kpiDivision">--</div>
+        <div class="kpi-sub" id="kpiDivisionList"></div>
       </div>
       <div class="kpi-card" id="kpiCardOnline" data-kpi="online">
-        <div class="label">Online 占比 <span class="hint">点击筛选 →</span></div>
-        <div class="value" id="kpiOnline">-</div><div class="sub" id="kpiOnlineSub">-</div>
+        <div class="kpi-label"><span>Online 占比</span><span>点击筛选 →</span></div>
+        <div class="kpi-value" id="kpiOnline">--</div>
+        <div class="kpi-sub" id="kpiOnlineSub"></div>
       </div>
       <div class="kpi-card" id="kpiCardL1" data-kpi="l1">
-        <div class="label">Channel L1 数量 <span class="hint">点击筛选 →</span></div>
-        <div class="value" id="kpiL1">-</div><div class="sub">E-Boutique / Social / 其他</div>
+        <div class="kpi-label"><span>Channel L1 数量</span><span>点击筛选 →</span></div>
+        <div class="kpi-value" id="kpiL1">-</div>
+        <div class="kpi-sub">E-Boutique / Social / 其他</div>
       </div>
     </div>
 
@@ -255,18 +183,99 @@
       <div class="dict-grid" id="dictGrid"></div>
     </div>
   </div>
-</div>
+</section>
 
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal-box" id="modalBox"></div>
-</div>
+<!-- ===================== TAB 2：专题页 ===================== -->
+<section id="tab2" class="tab-panel">
+  <div class="status-bar">
+    <span class="status-dot" id="topicsStatusDot"></span>
+    <span id="topicsStatusText">正在加载专题数据...</span>
+  </div>
 
-<button class="back-to-top" id="backToTopBtn" title="回到顶部" aria-label="回到顶部">↑</button>
+  <div class="card">
+    <h3>专题页</h3>
+    <div class="desc">承载各类取数/归属逻辑专题模块（数据来源：topics.json）。默认展示模块卡片，可通过下方筛选器按「主题分类 / 来源 Sheet」组合筛选，点击卡片查看该专题的完整规则详情。</div>
+    <div id="topicEmptyState" style="display:none;color:#a33;font-size:13px;"></div>
+  </div>
+
+  <div class="card">
+    <div class="filter-row" id="topicFilterRow"></div>
+    <input class="search-bar" id="topicSearchInput" placeholder="🔍 搜索专题关键词...">
+    <div class="result-summary">
+      <span id="topicResultCount">共 0 个专题</span>
+      <span class="clear-link" id="topicClearFilters">清除全部筛选</span>
+    </div>
+    <div class="topic-grid" id="topicGrid"></div>
+  </div>
+</section>
+
+<!-- ===================== TAB 3：Sellout 大宽表设计 ===================== -->
+<section id="tab3" class="tab-panel">
+  <div class="status-bar">
+    <span class="status-dot" id="joinsStatusDot"></span>
+    <span id="joinsStatusText">正在加载关系设计数据...</span>
+  </div>
+  <div id="joinsEmptyState" style="display:none;color:#a33;font-size:13px;margin-bottom:16px;"></div>
+
+  <div class="card">
+    <h3>Sellout 事实表 &amp; 维度表大连接设计</h3>
+    <div class="desc">下方关系图与说明表均由 joins.json 动态渲染，字段来自实际数据源列名。如需调整维度建模结构，只需更新 joins.json，无需改动本页面代码。</div>
+    <div id="erDiagramContainer"></div>
+  </div>
+  <div class="card">
+    <h3>字段关联说明表</h3>
+    <table class="join-table">
+      <thead><tr><th>事实表字段</th><th>关联维度表</th><th>维度表键</th></tr></thead>
+      <tbody id="joinTableBody"></tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h3>事实表 / 维度表字段清单</h3>
+    <div id="tableFieldsContainer"></div>
+  </div>
+</section>
+
+</main>
+
+<button id="backToTopBtn">↑</button>
+
+<div class="modal-overlay" id="modalOverlay"><div class="modal-box" id="modalBox"></div></div>
+<div class="modal-overlay" id="topicModalOverlay"><div class="modal-box" id="topicModalBox"></div></div>
 
 <script>
+/* ============================================================
+   全局：Tab 切换
+   ============================================================ */
+document.querySelectorAll('#tabNav a').forEach(a=>{
+  a.addEventListener('click',(e)=>{
+    e.preventDefault();
+    document.querySelectorAll('#tabNav a').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    a.classList.add('active');
+    document.getElementById(a.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+const backToTopBtn = document.getElementById('backToTopBtn');
+window.addEventListener('scroll', () => {
+  backToTopBtn.classList.toggle('show', window.scrollY > 300);
+});
+backToTopBtn.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+
+const $ = id => document.getElementById(id);
+function escAttr(s){ return String(s).replace(/"/g,'&quot;'); }
+function countBy(arr, key){
+  const m = {};
+  arr.forEach(r => { const v = (r[key] || '未标注').toString().trim() || '未标注'; m[v] = (m[v]||0)+1; });
+  return m;
+}
+
+/* ============================================================
+   TAB 1：数据总览 —— 原有逻辑，原样保留
+   ============================================================ */
 let rawRows = [];
 let charts = {};
-const $ = id => document.getElementById(id);
 const PALETTE = ['#1B2A4A','#2E6F95','#2F7D6B','#D98E3B','#B5495B','#6B5B95','#5C6B7A','#4F8FC0'];
 
 const FILTER_DEFS = [
@@ -299,11 +308,6 @@ async function init(){
   }
 }
 
-function countBy(arr, key){
-  const m = {};
-  arr.forEach(r => { const v = (r[key] || '未标注').toString().trim() || '未标注'; m[v] = (m[v]||0)+1; });
-  return m;
-}
 function destroyChart(id){ if(charts[id]){ charts[id].destroy(); } }
 
 function render(){
@@ -422,13 +426,10 @@ $('clearFilters').addEventListener('click', () => {
 function fuzzyMatch(row, query){
   query = query.toLowerCase().trim();
   if(!query) return true;
-
   const searchableFields = [row.channel_l1, row.channel_l2, row.channel_l3];
   const text = searchableFields.join(' ').toLowerCase();
-
   const normalizedText = text.replace(/\s+/g,'');
   const normalizedQuery = query.replace(/\s+/g,'');
-
   return text.includes(query) || normalizedText.includes(normalizedQuery);
 }
 
@@ -495,7 +496,7 @@ function openModal(idx){
 }
 function closeModal(){ $('modalOverlay').classList.remove('show'); }
 $('modalOverlay').addEventListener('click', (e) => { if(e.target.id === 'modalOverlay') closeModal(); });
-document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape'){ closeModal(); closeTopicModal(); } });
 
 function setActiveKpiCard(kpiKey){
   document.querySelectorAll('.kpi-card').forEach(c => c.classList.remove('active'));
@@ -521,44 +522,233 @@ function bindKpiCardActions(){
     setActiveKpiCard('total');
     $('detailSection').scrollIntoView({behavior:'smooth', block:'start'});
   };
-  $('kpiCardDivision').onclick = () => {
-    setActiveKpiCard('division');
-    openDropdownAfterScroll('dd-division');
-  };
-  $('kpiCardOnline').onclick = () => {
-    setActiveKpiCard('online');
-    openDropdownAfterScroll('dd-l0');
-  };
-  $('kpiCardL1').onclick = () => {
-    setActiveKpiCard('l1');
-    openDropdownAfterScroll('dd-l1');
-  };
+  $('kpiCardDivision').onclick = () => { setActiveKpiCard('division'); openDropdownAfterScroll('dd-division'); };
+  $('kpiCardOnline').onclick = () => { setActiveKpiCard('online'); openDropdownAfterScroll('dd-l0'); };
+  $('kpiCardL1').onclick = () => { setActiveKpiCard('l1'); openDropdownAfterScroll('dd-l1'); };
 }
 
-document.querySelectorAll('.nav-links a').forEach(a => {
-  a.addEventListener('click', (e) => {
-    e.preventDefault();
-    const target = document.getElementById(a.dataset.target);
-    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
-  });
-});
-
-function escAttr(s){ return String(s).replace(/"/g,'&quot;'); }
-
-/* ---------- 回到顶部按钮逻辑 ---------- */
-const backToTopBtn = $('backToTopBtn');
-window.addEventListener('scroll', () => {
-  if(window.scrollY > 300){
-    backToTopBtn.classList.add('show');
-  } else {
-    backToTopBtn.classList.remove('show');
-  }
-});
-backToTopBtn.addEventListener('click', () => {
-  window.scrollTo({top:0, behavior:'smooth'});
-});
-
 init();
+
+/* ============================================================
+   TAB 2：专题页 —— topics.json 动态渲染
+   ============================================================ */
+let rawTopics = [];
+const TOPIC_FILTER_DEFS = [
+  { key:'category', field:'category', label:'主题分类' },
+  { key:'source_sheet', field:'source_sheet', label:'来源 Sheet' }
+];
+const topicState = {};
+TOPIC_FILTER_DEFS.forEach(f => topicState[f.key] = { selected:new Set() });
+
+async function initTopics(){
+  try{
+    const res = await fetch('./topics.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const payload = await res.json();
+    rawTopics = payload.topics || [];
+    $('topicsStatusDot').classList.add('on');
+    $('topicsStatusText').textContent = '专题数据已加载 · ' + (payload.generatedAt || '');
+    $('topicEmptyState').style.display='none';
+    buildTopicFilterRow();
+    applyTopicFiltersAndRender();
+  }catch(e){
+    $('topicsStatusDot').classList.add('err');
+    $('topicsStatusText').textContent = '专题数据加载失败';
+    $('topicEmptyState').style.display='block';
+    $('topicEmptyState').textContent = '未能读取到 topics.json：' + e.message + '（请用 convert_topics.html 生成后放入仓库根目录）';
+  }
+}
+
+function topicRowsAfter(excludeKey){
+  let rows = rawTopics;
+  TOPIC_FILTER_DEFS.forEach(f => {
+    if(f.key === excludeKey) return;
+    const sel = topicState[f.key].selected;
+    if(sel.size > 0) rows = rows.filter(r => sel.has((r[f.field]||'未标注').toString().trim() || '未标注'));
+  });
+  return rows;
+}
+
+function buildTopicFilterRow(){
+  const row = $('topicFilterRow');
+  row.innerHTML = '';
+  TOPIC_FILTER_DEFS.forEach(f => {
+    const pool = topicRowsAfter(f.key);
+    const countMap = countBy(pool, f.field);
+    const options = Object.keys(countMap).sort();
+    const sel = topicState[f.key].selected;
+    [...sel].forEach(v => { if(!countMap[v]) sel.delete(v); });
+
+    const dd = document.createElement('div');
+    dd.className = 'dropdown';
+    dd.id = 'tdd-' + f.key;
+    const btnLabel = sel.size ? `${f.label} (${sel.size})` : f.label;
+    dd.innerHTML = `
+      <div class="dropdown-btn ${sel.size?'has-selection':''}">
+        <span>${btnLabel}</span><span class="arrow">▾</span>
+      </div>
+      <div class="dropdown-panel">
+        <div class="dropdown-panel-head"><span class="clear-one" data-key="${f.key}">清空</span></div>
+        ${options.length ? options.map(opt => `
+          <label class="option-row">
+            <input type="checkbox" name="${f.key}" ${sel.has(opt)?'checked':''} data-key="${f.key}" data-val="${escAttr(opt)}">
+            <span>${opt}</span><span class="cnt">${countMap[opt]}</span>
+          </label>`).join('') : '<div class="option-empty">当前上级筛选下暂无可选项</div>'}
+      </div>`;
+    row.appendChild(dd);
+
+    dd.querySelector('.dropdown-btn').addEventListener('click',(e)=>{
+      e.stopPropagation();
+      const isOpen = dd.classList.contains('open');
+      document.querySelectorAll('.dropdown.open').forEach(d=>d.classList.remove('open'));
+      if(!isOpen) dd.classList.add('open');
+    });
+    dd.querySelectorAll('input[type=checkbox]').forEach(inp=>{
+      inp.addEventListener('change',(e)=>{
+        const key=e.target.dataset.key, val=e.target.dataset.val;
+        if(e.target.checked) topicState[key].selected.add(val); else topicState[key].selected.delete(val);
+        buildTopicFilterRow();
+        applyTopicFiltersAndRender();
+        const reopened = $('tdd-'+key);
+        if(reopened) reopened.classList.add('open');
+      });
+    });
+    dd.querySelector('.clear-one').addEventListener('click',(e)=>{
+      e.stopPropagation();
+      const key=e.target.dataset.key;
+      topicState[key].selected.clear();
+      buildTopicFilterRow();
+      applyTopicFiltersAndRender();
+      $('tdd-'+key).classList.add('open');
+    });
+    dd.querySelector('.dropdown-panel').addEventListener('click',(e)=>e.stopPropagation());
+  });
+}
+
+$('topicClearFilters').addEventListener('click', () => {
+  TOPIC_FILTER_DEFS.forEach(f => topicState[f.key].selected.clear());
+  $('topicSearchInput').value = '';
+  buildTopicFilterRow();
+  applyTopicFiltersAndRender();
+});
+$('topicSearchInput').addEventListener('input', applyTopicFiltersAndRender);
+
+let currentTopics = [];
+function applyTopicFiltersAndRender(){
+  let rows = topicRowsAfter(null);
+  const q = $('topicSearchInput').value.trim().toLowerCase();
+  if(q) rows = rows.filter(r => ((r.title||'')+(r.summary||'')+(r.category||'')+(r.source_sheet||'')).toLowerCase().includes(q));
+  currentTopics = rows;
+
+  $('topicResultCount').textContent = `共 ${rows.length} 个专题`;
+  const grid = $('topicGrid');
+  grid.innerHTML = '';
+  if(rows.length === 0){
+    grid.innerHTML = '<div class="empty-note">没有匹配的专题，请调整筛选条件，或补充 topics.json</div>';
+    return;
+  }
+  rows.forEach((t, idx) => {
+    const item = document.createElement('div');
+    item.className = 'topic-card';
+    item.innerHTML = `
+      <h3>${t.title}</h3>
+      <div class="badges" style="margin-bottom:8px;">
+        <span class="badge">${t.category||'未分类'}</span>
+        <span class="badge freq">${t.source_sheet||'-'}</span>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 8px;">${t.summary||''}</p>
+      <span class="link-more">查看完整逻辑 →</span>`;
+    item.addEventListener('click', () => openTopicModal(idx));
+    grid.appendChild(item);
+  });
+}
+
+function openTopicModal(idx){
+  const t = currentTopics[idx];
+  const rowsHtml = (t.detail_fields||[]).map(f => `
+    <div class="modal-detail-row"><div class="k">${f.label}</div><div class="v">${f.value}</div></div>
+  `).join('');
+  $('topicModalBox').innerHTML = `
+    <button class="modal-close" id="topicModalCloseBtn">✕</button>
+    <div class="modal-title">${t.title}</div>
+    <div class="modal-path">来源 Sheet：${t.source_sheet||'-'} ｜ 分类：${t.category||'-'}</div>
+    ${rowsHtml || '<div class="empty-note">暂无详细字段，请在 topics.json 中补充 detail_fields</div>'}
+  `;
+  $('topicModalOverlay').classList.add('show');
+  $('topicModalCloseBtn').addEventListener('click', closeTopicModal);
+}
+function closeTopicModal(){ $('topicModalOverlay').classList.remove('show'); }
+$('topicModalOverlay').addEventListener('click',(e)=>{ if(e.target.id==='topicModalOverlay') closeTopicModal(); });
+
+initTopics();
+
+/* ============================================================
+   TAB 3：Sellout 大宽表设计 —— joins.json 动态渲染
+   ============================================================ */
+mermaid.initialize({ startOnLoad:false, theme:'neutral' });
+
+async function initJoins(){
+  try{
+    const res = await fetch('./joins.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const payload = await res.json();
+    $('joinsStatusDot').classList.add('on');
+    $('joinsStatusText').textContent = '关系设计数据已加载 · ' + (payload.generatedAt || '');
+    $('joinsEmptyState').style.display='none';
+    renderJoins(payload);
+  }catch(e){
+    $('joinsStatusDot').classList.add('err');
+    $('joinsStatusText').textContent = '关系设计数据加载失败';
+    $('joinsEmptyState').style.display='block';
+    $('joinsEmptyState').textContent = '未能读取到 joins.json：' + e.message + '（请用 convert_joins.html 生成后放入仓库根目录）';
+  }
+}
+
+function buildMermaidSource(payload){
+  const fact = payload.fact_table;
+  const dims = payload.dimension_tables;
+  const rels = payload.relationships;
+
+  let lines = ['erDiagram'];
+  rels.forEach(r => {
+    lines.push(`    ${fact.name} }o--|| ${r.dim_table} : ${r.fact_field}`);
+  });
+
+  lines.push(`    ${fact.name} {`);
+  fact.fields.forEach(f => lines.push(`        string ${f}`));
+  lines.push('    }');
+
+  dims.forEach(d => {
+    lines.push(`    ${d.name} {`);
+    d.fields.forEach(f => lines.push(`        string ${f}`));
+    lines.push('    }');
+  });
+
+  return lines.join('\n');
+}
+
+function renderJoins(payload){
+  const mermaidSrc = buildMermaidSource(payload);
+  const container = $('erDiagramContainer');
+  container.innerHTML = `<pre class="mermaid">${mermaidSrc}</pre>`;
+  mermaid.init(undefined, container.querySelectorAll('.mermaid'));
+
+  const tbody = $('joinTableBody');
+  tbody.innerHTML = payload.relationships.map(r => `
+    <tr><td>${r.fact_field}</td><td>${r.dim_table}</td><td>${r.dim_key}</td></tr>
+  `).join('');
+
+  const fieldsBox = $('tableFieldsContainer');
+  const allTables = [payload.fact_table, ...payload.dimension_tables];
+  fieldsBox.innerHTML = allTables.map(t => `
+    <div style="margin-bottom:14px;">
+      <div style="font-weight:700;font-size:13px;margin-bottom:6px;">${t.name}${t.key_field ? '（主键：'+t.key_field+'）' : '（事实表）'}</div>
+      <div class="badges">${t.fields.map(f=>`<span class="badge">${f}</span>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+initJoins();
 </script>
 </body>
 </html>
