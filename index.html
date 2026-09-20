@@ -14,10 +14,28 @@
   *{box-sizing:border-box;}
   body{margin:0;font-family:-apple-system,"Segoe UI",Arial,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);}
   header{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
-  .header-top{display:flex;align-items:center;gap:10px;padding:14px 24px 0;}
-  .logo-dots{width:20px;height:20px;display:inline-block;}
+
+  .header-top{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:16px 24px 0;
+  }
+  .logo-dots{
+    width:22px;
+    height:22px;
+    flex-shrink:0;
+    display:block;
+  }
+  .brand-text{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    line-height:1.3;
+  }
   .brand-sub{font-size:11px;letter-spacing:1px;color:var(--muted);font-weight:600;}
-  .brand-main{font-size:20px;font-weight:800;margin-top:2px;}
+  .brand-main{font-size:20px;font-weight:800;}
+
   .nav-links{display:flex;gap:28px;padding:10px 24px 0;margin-top:6px;}
   .nav-links a{text-decoration:none;color:var(--muted);font-size:14px;font-weight:600;padding-bottom:12px;border-bottom:2px solid transparent;cursor:pointer;}
   .nav-links a.active{color:var(--navy);border-bottom-color:var(--navy);}
@@ -70,18 +88,58 @@
   .badge.freq{background:#eee6f6;color:#6b5b95;}
   .link-more{font-size:12px;color:var(--teal);font-weight:600;}
 
+  .topic-card p{
+    display:-webkit-box;
+    -webkit-line-clamp:3;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+
   .empty-note{grid-column:1/-1;text-align:center;color:var(--muted);font-size:13px;padding:20px 0;}
 
   .modal-overlay{position:fixed;inset:0;background:rgba(10,14,25,.45);display:none;align-items:center;justify-content:center;z-index:100;}
   .modal-overlay.show{display:flex;}
   .modal-box{background:#fff;border-radius:16px;padding:26px;max-width:640px;width:92%;max-height:82vh;overflow:auto;position:relative;}
+  #topicModalBox.modal-box{max-width:760px;}
   .modal-close{position:absolute;top:14px;right:16px;border:none;background:#f2f4f8;border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:14px;}
   .modal-title{font-size:18px;font-weight:800;margin-bottom:4px;padding-right:30px;}
-  .modal-path{font-size:12px;color:var(--muted);margin-bottom:12px;}
+  .modal-path{
+    font-size:12px;color:var(--muted);margin-bottom:16px;
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    padding-bottom:12px;border-bottom:1px dashed var(--border);
+  }
   .modal-badges{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
-  .modal-detail-row{display:grid;grid-template-columns:140px 1fr;gap:10px;font-size:13px;padding:8px 0;border-top:1px solid var(--border);}
-  .modal-detail-row .k{color:var(--muted);}
-  .modal-detail-row .v{white-space:pre-wrap;}
+
+  .modal-detail-row{
+    display:block;
+    padding:12px 0;
+    border-top:1px solid var(--border);
+  }
+  .modal-detail-row .k{
+    font-size:12px;
+    font-weight:700;
+    color:var(--navy);
+    margin-bottom:6px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .modal-detail-row .k::before{
+    content:'';
+    width:6px;height:6px;border-radius:50%;
+    background:var(--teal);
+    display:inline-block;
+  }
+  .modal-detail-row .v{
+    font-size:13px;
+    line-height:1.7;
+    white-space:pre-wrap;
+    color:var(--text);
+    background:#f8f9fb;
+    border-radius:8px;
+    padding:10px 12px;
+    border:1px solid var(--border);
+  }
 
   .join-table{width:100%;border-collapse:collapse;font-size:13px;}
   .join-table th,.join-table td{border:1px solid var(--border);padding:8px 10px;text-align:left;}
@@ -97,15 +155,23 @@
   #emptyState{display:none;background:#fff5f5;border:1px solid #f4c7c3;border-radius:12px;padding:16px;margin-bottom:16px;}
   #diagBox{font-size:12px;color:#a33;white-space:pre-wrap;margin-top:6px;}
 
-  #erDiagramContainer{overflow:auto;}
+  #erDiagramContainer{overflow:auto;min-height:120px;}
+  #erDiagramContainer svg{max-width:100%;height:auto;}
 </style>
 </head>
 <body>
 
 <header>
   <div class="header-top">
-    <svg class="logo-dots" viewBox="0 0 20 20"><circle cx="3" cy="3" r="2" fill="#1B2A4A"/><circle cx="10" cy="3" r="2" fill="#1B2A4A"/><circle cx="17" cy="3" r="2" fill="#1B2A4A"/><circle cx="3" cy="10" r="2" fill="#1B2A4A"/><circle cx="10" cy="10" r="2" fill="#1B2A4A"/><circle cx="3" cy="17" r="2" fill="#1B2A4A"/></svg>
-    <div>
+    <svg class="logo-dots" viewBox="0 0 20 20">
+      <circle cx="3" cy="3" r="2" fill="#1B2A4A"/>
+      <circle cx="10" cy="3" r="2" fill="#1B2A4A"/>
+      <circle cx="17" cy="3" r="2" fill="#1B2A4A"/>
+      <circle cx="3" cy="10" r="2" fill="#1B2A4A"/>
+      <circle cx="10" cy="10" r="2" fill="#1B2A4A"/>
+      <circle cx="3" cy="17" r="2" fill="#1B2A4A"/>
+    </svg>
+    <div class="brand-text">
       <div class="brand-sub">ONE L'ORÉAL</div>
       <div class="brand-main">Data</div>
     </div>
@@ -272,7 +338,7 @@ function countBy(arr, key){
 }
 
 /* ============================================================
-   TAB 1：数据总览 —— 原有逻辑，原样保留
+   TAB 1：数据总览
    ============================================================ */
 let rawRows = [];
 let charts = {};
@@ -530,7 +596,7 @@ function bindKpiCardActions(){
 init();
 
 /* ============================================================
-   TAB 2：专题页 —— topics.json 动态渲染
+   TAB 2：专题页
    ============================================================ */
 let rawTopics = [];
 const TOPIC_FILTER_DEFS = [
@@ -666,12 +732,18 @@ function applyTopicFiltersAndRender(){
 function openTopicModal(idx){
   const t = currentTopics[idx];
   const rowsHtml = (t.detail_fields||[]).map(f => `
-    <div class="modal-detail-row"><div class="k">${f.label}</div><div class="v">${f.value}</div></div>
+    <div class="modal-detail-row">
+      <div class="k">${f.label}</div>
+      <div class="v">${f.value}</div>
+    </div>
   `).join('');
   $('topicModalBox').innerHTML = `
     <button class="modal-close" id="topicModalCloseBtn">✕</button>
     <div class="modal-title">${t.title}</div>
-    <div class="modal-path">来源 Sheet：${t.source_sheet||'-'} ｜ 分类：${t.category||'-'}</div>
+    <div class="modal-path">
+      <span class="badge freq">来源 Sheet：${t.source_sheet||'-'}</span>
+      <span class="badge">分类：${t.category||'-'}</span>
+    </div>
     ${rowsHtml || '<div class="empty-note">暂无详细字段，请在 topics.json 中补充 detail_fields</div>'}
   `;
   $('topicModalOverlay').classList.add('show');
@@ -683,7 +755,7 @@ $('topicModalOverlay').addEventListener('click',(e)=>{ if(e.target.id==='topicMo
 initTopics();
 
 /* ============================================================
-   TAB 3：Sellout 大宽表设计 —— joins.json 动态渲染
+   TAB 3：Sellout 大宽表设计
    ============================================================ */
 mermaid.initialize({ startOnLoad:false, theme:'neutral' });
 
@@ -695,7 +767,7 @@ async function initJoins(){
     $('joinsStatusDot').classList.add('on');
     $('joinsStatusText').textContent = '关系设计数据已加载 · ' + (payload.generatedAt || '');
     $('joinsEmptyState').style.display='none';
-    renderJoins(payload);
+    await renderJoins(payload);
   }catch(e){
     $('joinsStatusDot').classList.add('err');
     $('joinsStatusText').textContent = '关系设计数据加载失败';
@@ -727,11 +799,22 @@ function buildMermaidSource(payload){
   return lines.join('\n');
 }
 
-function renderJoins(payload){
+async function renderJoins(payload){
   const mermaidSrc = buildMermaidSource(payload);
   const container = $('erDiagramContainer');
-  container.innerHTML = `<pre class="mermaid">${mermaidSrc}</pre>`;
-  mermaid.init(undefined, container.querySelectorAll('.mermaid'));
+  container.innerHTML = `<pre class="mermaid" id="erMermaidPre">${mermaidSrc}</pre>`;
+
+  try{
+    await mermaid.run({ nodes: [document.getElementById('erMermaidPre')] });
+  }catch(err){
+    container.innerHTML = `
+      <div class="empty-note" style="color:#a33;text-align:left;">
+        ⚠ ER 图渲染失败：${err.message}<br>
+        <span style="font-size:12px;color:var(--muted);">请检查 joins.json 中的表名/字段名是否包含 Mermaid 不支持的特殊字符（如空格、冒号、中文标点）</span>
+      </div>
+      <pre style="font-size:12px;background:#f8f9fb;padding:10px;border-radius:8px;overflow:auto;">${mermaidSrc}</pre>
+    `;
+  }
 
   const tbody = $('joinTableBody');
   tbody.innerHTML = payload.relationships.map(r => `
